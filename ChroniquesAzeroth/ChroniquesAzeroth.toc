@@ -1,0 +1,13 @@
+## Interface: 16001
+## Title: Chronicles of Azeroth
+## Title-frFR: Chroniques d'Azeroth
+## Notes: Standalone collection tracking for quests and professions.
+## Notes-frFR: Suivi autonome de collection des quêtes et métiers.
+## Author: Peron
+## Version: 0.25.0-beta
+## SavedVariables: ChroniquesAzerothDB
+## SavedVariablesPerCharacter: ChroniquesAzerothCharacterDB
+
+ProfessionCatalog.lua
+QuestCatalog.lua
+ChroniquesAzeroth.lua

@@ -1,0 +1,10 @@
+# Local release archives
+ChroniquesAzeroth-*.zip
+
+# Regenerable third-party source data (not required by the addon at runtime)
+QuestieDB-source/
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+*.code-workspace
