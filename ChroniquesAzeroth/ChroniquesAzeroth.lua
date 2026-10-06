@@ -23,7 +23,9 @@ CA:RegisterEvent("TRADE_SKILL_CLOSE")
 -- Chroniques suit la langue du client : le français reste la langue par
 -- défaut des clients frFR, tous les autres clients reçoivent l'anglais.
 CA.locale = (GetLocale and GetLocale() == "frFR") and "frFR" or "enUS"
-CA.VERSION = "0.25.0-beta"
+CA.VERSION = "0.25.1-beta"
+CA.GITHUB_ISSUES_URL = "https://github.com/Rincevant/chronicles-of-azeroth/issues"
+CA.DISCORD_URL = "https://discord.gg/hmQTKkdRzB"
 
 local TEXT = {
   frFR = {
@@ -36,7 +38,7 @@ local TEXT = {
     selectRecipe = "Sélectionnez une recette", detailWillAppear = "Le détail apparaîtra ici.", learnedRecipe = "RECETTE APPRISE", learnRecipe = "RECETTE À APPRENDRE", skill = "COMPÉTENCE",
     sourceUnknown = "Obtention non précisée dans le catalogue Forever.", trainer = "Maître de profession", vendor = "Vendeur", loot = "Butin", questSpecial = "Quête, réputation ou source spéciale", specialSource = "Source spéciale",
     openProfessionComponents = "Ouvrez ce métier dans le jeu pour lire les composants de cette recette.", componentsWillAppear = "Les composants apparaîtront ici.", sourceWillAppear = "Le lieu d’obtention sera affiché pour la recette sélectionnée.", learnedAccount = "Déjà apprise sur le compte.", learnedCharacter = "Déjà apprise par ce personnage.", sourceClientUnavailable = "Source non fournie par le client Forever pour cette recette. Ouvrez un maître ou un vendeur : toute information exposée par le jeu est mémorisée ici.",
-    feedbackTitle = "VOS RETOURS", feedbackDescription = "Chroniques ne peut pas envoyer de données sur Internet. Préparez le rapport, copiez-le avec Ctrl+C, puis collez-le dans le canal de retours choisi.", prepareReport = "PRÉPARER LE RAPPORT", feedbackCopyHint = "Le rapport est sélectionné : Ctrl+C pour le copier. Aucun envoi automatique.", feedbackDestination = "Canal recommandé : un ticket GitHub pour les bugs, Discord pour les échanges rapides.",
+    feedbackTitle = "VOS RETOURS", feedbackDescription = "Chroniques ne peut pas envoyer de données sur Internet. Préparez le rapport, copiez-le avec Ctrl+C, puis collez-le dans le canal de retours choisi.", prepareReport = "PRÉPARER LE RAPPORT", feedbackCopyHint = "Le rapport est sélectionné : Ctrl+C pour le copier. Aucun envoi automatique.", feedbackDestination = "Bugs : github.com/Rincevant/chronicles-of-azeroth/issues  •  Communauté : discord.gg/hmQTKkdRzB", copyDiscord = "COPIER LE LIEN DISCORD", discordCopyHint = "Lien Discord sélectionné : Ctrl+C pour le copier.",
     noZoneQuests = "Aucune quête extérieure répertoriée dans cette zone", noQuestListed = "AUCUNE QUÊTE RÉPERTORIÉE", noZoneQuestDetail = "Le catalogue embarqué est chargé ; cette zone ne possède pas de quête extérieure dans les données Forever.", rewardsWhenSelected = "Récompenses disponibles quand une quête est sélectionnée.",
     questInProgress = "EN COURS - dans votre journal", questCompleted = "TERMINÉE", questDiscover = "À DÉCOUVRIR", required = "requis", optional = "fac.", level = "Niv.", questsRequired = "%d / %d requises terminées - %d à faire", questCount = "%d / %d quêtes - %s",
     object = "objet", objects = "objets", hoverIcons = "survolez les icônes", questFallback = "Quête %d", questUnavailable = "Titre de quête indisponible", recipeFallback = "Recette #%d", itemFallback = "Objet #%d",
@@ -55,7 +57,7 @@ local TEXT = {
     selectRecipe = "Select a recipe", detailWillAppear = "Details will appear here.", learnedRecipe = "RECIPE LEARNED", learnRecipe = "RECIPE TO LEARN", skill = "SKILL",
     sourceUnknown = "Acquisition is not specified in the Forever catalog.", trainer = "Profession trainer", vendor = "Vendor", loot = "Loot", questSpecial = "Quest, reputation, or special source", specialSource = "Special source",
     openProfessionComponents = "Open this profession in-game to read this recipe's reagents.", componentsWillAppear = "Reagents will appear here.", sourceWillAppear = "The acquisition source will appear for the selected recipe.", learnedAccount = "Already learned on the account.", learnedCharacter = "Already learned by this character.", sourceClientUnavailable = "The Forever client did not provide a source for this recipe. Open a trainer or vendor: every detail exposed by the game is stored here.",
-    feedbackTitle = "YOUR FEEDBACK", feedbackDescription = "Chronicles cannot send data to the Internet. Prepare the report, copy it with Ctrl+C, then paste it into the feedback channel you choose.", prepareReport = "PREPARE REPORT", feedbackCopyHint = "The report is selected: press Ctrl+C to copy it. Nothing is sent automatically.", feedbackDestination = "Recommended channel: a GitHub issue for bugs, Discord for quick discussion.",
+    feedbackTitle = "YOUR FEEDBACK", feedbackDescription = "Chronicles cannot send data to the Internet. Prepare the report, copy it with Ctrl+C, then paste it into the feedback channel you choose.", prepareReport = "PREPARE REPORT", feedbackCopyHint = "The report is selected: press Ctrl+C to copy it. Nothing is sent automatically.", feedbackDestination = "Bugs: github.com/Rincevant/chronicles-of-azeroth/issues  •  Community: discord.gg/hmQTKkdRzB", copyDiscord = "COPY DISCORD LINK", discordCopyHint = "Discord link selected: press Ctrl+C to copy it.",
     noZoneQuests = "No outdoor quests are listed for this zone", noQuestListed = "NO QUESTS LISTED", noZoneQuestDetail = "The embedded catalog is loaded; this zone has no outdoor quests in the Forever data.", rewardsWhenSelected = "Rewards are available when a quest is selected.",
     questInProgress = "IN PROGRESS - in your quest log", questCompleted = "COMPLETED", questDiscover = "TO DISCOVER", required = "required", optional = "opt.", level = "Lvl.", questsRequired = "%d / %d required completed - %d remaining", questCount = "%d / %d quests - %s",
     object = "item", objects = "items", hoverIcons = "hover the icons", questFallback = "Quest %d", questUnavailable = "Quest title unavailable", recipeFallback = "Recipe #%d", itemFallback = "Item #%d",
@@ -2444,6 +2446,9 @@ function CA:BuildFeedbackReport()
     self:L("reportExpected") .. ":",
     "",
     self:L("reportActual") .. ":",
+    "",
+    "GitHub: " .. self.GITHUB_ISSUES_URL,
+    "Discord: " .. self.DISCORD_URL,
   }, "\n")
 end
 
@@ -2459,6 +2464,15 @@ end
 
 function CA:RefreshFeedback()
   if self.feedbackCopyHint then self.feedbackCopyHint:SetText(self:L("feedbackCopyHint")) end
+end
+
+function CA:CopyFeedbackLink(url, hint)
+  if self.feedbackReportEdit then
+    self.feedbackReportEdit:SetText(url)
+    self.feedbackReportEdit:SetFocus()
+    self.feedbackReportEdit:HighlightText()
+  end
+  if self.feedbackCopyHint then self.feedbackCopyHint:SetText(hint) end
 end
 
 function CA:CreateFeedbackUI(parent)
@@ -2485,7 +2499,7 @@ function CA:CreateFeedbackUI(parent)
   self.feedbackCopyHint = hint
 
   local edit = CreateFrame("EditBox", nil, content, "BackdropTemplate")
-  edit:SetPoint("TOPLEFT", 28, -134); edit:SetSize(994, 200)
+  edit:SetPoint("TOPLEFT", 28, -134); edit:SetSize(994, 174)
   edit:SetMultiLine(true); edit:SetAutoFocus(false); edit:SetFont(STANDARD_TEXT_FONT, 10, "")
   edit:SetTextColor(.92, .89, .76); edit:SetTextInsets(10, 10, 8, 8); edit:SetJustifyH("LEFT"); edit:SetJustifyV("TOP")
   edit:SetBackdrop({ bgFile = "Interface/ChatFrame/ChatFrameBackground", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 10 })
@@ -2496,8 +2510,17 @@ function CA:CreateFeedbackUI(parent)
   end)
   self.feedbackReportEdit = edit
 
+  local discord = CreateFrame("Button", nil, content, "BackdropTemplate")
+  discord:SetSize(190, 24); discord:SetPoint("TOPLEFT", 28, -319)
+  discord:SetBackdrop({ bgFile = "Interface/ChatFrame/ChatFrameBackground", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 10 })
+  discord:SetBackdropColor(.12, .09, .22, 1); discord:SetBackdropBorderColor(.57, .42, .94, .95)
+  discord.text = label(discord, self:L("copyDiscord"), 9, {.80, .70, 1}); discord.text:SetPoint("CENTER")
+  discord:SetScript("OnEnter", function(button) button:SetBackdropColor(.22, .15, .38, 1) end)
+  discord:SetScript("OnLeave", function(button) button:SetBackdropColor(.12, .09, .22, 1) end)
+  discord:SetScript("OnClick", function() self:CopyFeedbackLink(self.DISCORD_URL, self:L("discordCopyHint")) end)
+
   local destination = label(content, self:L("feedbackDestination"), 10, {.88, .72, .32})
-  destination:SetPoint("TOPLEFT", 28, -348); destination:SetWidth(994); destination:SetJustifyH("LEFT"); destination:SetWordWrap(true)
+  destination:SetPoint("LEFT", discord, "RIGHT", 16, 0); destination:SetWidth(790); destination:SetJustifyH("LEFT"); destination:SetWordWrap(true)
   view:Hide()
 end
 

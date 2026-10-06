@@ -24,4 +24,7 @@
 
 ## Feedback
 
-Use the **Feedback** tab in game to prepare a diagnostic report, then open a GitHub issue with the generated text.
+Use the **Feedback** tab in game to prepare a diagnostic report, then copy it with `Ctrl+C`.
+
+- For bugs and feature requests, [open a GitHub issue](https://github.com/Rincevant/chronicles-of-azeroth/issues).
+- For quick discussion and community support, join the [Chronicles of Azeroth Discord](https://discord.gg/hmQTKkdRzB).
