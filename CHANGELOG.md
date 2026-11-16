@@ -5,6 +5,9 @@ the notes of its GitHub release.
 
 ## Unreleased
 
+- A log is kept in the saved variables: the APIs the client provides, the quests turned in
+  and any error of the addon, which no longer interrupts the game. `/ca help`, `/ca log`,
+  `/ca debug` and `/ca clearlog` complete `/ca diag`.
 - The **Professions** tab uses the layout of the **Quests** tab: the professions on the
   left; in the middle, the selected profession with a progress ring of its learned recipes,
   then the details of the selected recipe; on the right, the recipes of the profession.

@@ -100,7 +100,7 @@ end
 -------------------------------------------------------------------------------
 
 local fileCount = startSession(nil, nil)
-check(fileCount == 13, "the TOC lists %d files, 13 expected", fileCount)
+check(fileCount == 15, "the TOC lists %d files, 15 expected", fileCount)
 check(type(ChroniquesAzerothQuestCatalog) == "table", "the quest catalogue is loaded")
 check(type(ChroniquesAzerothProfessionCatalog) == "table", "the profession catalogue is loaded")
 
@@ -204,6 +204,36 @@ check(reportFound, "the feedback report is written into its text box")
 
 -- The diagnostic command runs without errors.
 SlashCmdList.CHRONIQUESAZEROTH("diag")
+
+-- The log is kept in the account saved variables, and the commands read it.
+local function logHas(pattern)
+    for _, entry in ipairs(ChroniquesAzerothDB.log.entries) do
+        if entry:find(pattern) then return true end
+    end
+    return false
+end
+check(logHas(" INFO Chronicles of Azeroth .* loaded"), "the log records the login")
+check(logHas(" INFO diag: Completed quests: "), "the diagnostic report is written to the log")
+check(logHas(" INFO Quest 21 turned in"), "a turned-in quest is logged")
+local chatBefore = #Stub.chat
+SlashCmdList.CHRONIQUESAZEROTH("log 3")
+check(#Stub.chat - chatBefore == 3, "/ca log 3 prints the last three entries")
+SlashCmdList.CHRONIQUESAZEROTH("help")
+check(Stub.chat[#Stub.chat]:find("/ca clearlog", 1, true) ~= nil, "/ca help lists the commands")
+SlashCmdList.CHRONIQUESAZEROTH("debug")
+check(ChroniquesAzerothDB.log.debug == true, "/ca debug turns detailed logging on")
+SlashCmdList.CHRONIQUESAZEROTH("debug")
+check(ChroniquesAzerothDB.log.debug == nil, "/ca debug turns detailed logging off")
+
+check(not logHas(" ERROR "), "no error was logged during the session")
+
+-- An error in an event handler reaches the log instead of breaking the addon.
+local unitFactionGroup = UnitFactionGroup
+UnitFactionGroup = function() error("client failure") end
+local handled = pcall(Stub.Fire, "ZONE_CHANGED_NEW_AREA")
+UnitFactionGroup = unitFactionGroup
+check(handled, "an error in an event handler does not escape it")
+check(logHas(" ERROR event ZONE_CHANGED_NEW_AREA failed: .*client failure"), "an error in an event handler is logged")
 
 -------------------------------------------------------------------------------
 -- Upgrade from saved variables written before schema 2

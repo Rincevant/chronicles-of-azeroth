@@ -71,6 +71,37 @@ local TEXT = {
   },
 }
 
+-- Adds the texts of a module, { frFR = { key = text }, enUS = { ... } }, to the tables above.
+function CA:AddTexts(texts)
+  for locale, entries in pairs(texts) do
+    TEXT[locale] = TEXT[locale] or {}
+    for key, value in pairs(entries) do TEXT[locale][key] = value end
+  end
+end
+
+-- Runs fn protected: an error is written to the log with its traceback instead of breaking
+-- the caller, and the same error is reported once, then every hundred occurrences.
+local failureCounts = {}
+function ns.SafeCall(context, fn, ...)
+  local args, count = { ... }, select("#", ...)
+  local ok, result = xpcall(function() return fn(unpack(args, 1, count)) end, function(err)
+    return tostring(err) .. "\n" .. (debugstack and debugstack(2, 12, 0) or "")
+  end)
+  if ok then return result end
+  if not ns.Log then
+    geterrorhandler()(result)
+    return nil
+  end
+  local key = context .. "|" .. (result:match("^[^\n]*") or "")
+  failureCounts[key] = (failureCounts[key] or 0) + 1
+  if failureCounts[key] == 1 then
+    ns.Log:Error("%s failed: %s", context, result)
+  elseif failureCounts[key] % 100 == 0 then
+    ns.Log:Error("%s failed %d times (last: %s)", context, failureCounts[key], result:match("^[^\n]*"))
+  end
+  return nil
+end
+
 function CA:L(key, ...)
   local value = (TEXT[self.locale] and TEXT[self.locale][key]) or TEXT.enUS[key] or key
   if select("#", ...) > 0 then return string.format(value, ...) end

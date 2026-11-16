@@ -20,10 +20,20 @@
 | Command | Effect |
 | --- | --- |
 | `/chroniques` or `/ca` | open or close the window |
-| `/ca diag` | read the professions again and print what the client exposes |
+| `/ca help` | list the commands |
+| `/ca diag` | list which game features the client provides and read the professions again |
+| `/ca log [count]` | print the last log entries |
+| `/ca debug` | toggle detailed logging |
+| `/ca clearlog` | clear the log |
 
 The minimap button opens the window with a left click and switches between **Account** and
 **Character** tracking with a right click; drag it around the minimap to move it.
+
+The addon keeps a log in its saved variables, written by the game on `/reload` and on logout:
+`WTF/Account/<account>/SavedVariables/ChroniquesAzeroth.lua`, table `ChroniquesAzerothDB.log`.
+At every login it records which client APIs exist, and any error of the addon is written there
+instead of interrupting the game, which helps when a feature behaves differently on the
+Forever client.
 
 ## How progress is counted
 

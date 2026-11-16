@@ -13,6 +13,8 @@ ProfessionCatalog.lua
 QuestCatalog.lua
 
 Core.lua
+Log.lua
+Diagnostics.lua
 Zones.lua
 Quests.lua
 Professions.lua
