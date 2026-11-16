@@ -151,9 +151,12 @@ local artOf = function(group)
     return questsView.banner.art.request
 end
 local warrior = artOf(findGroup("categories", 81))
-check(warrior and warrior.kind == "file" and warrior.ratio == 1, "a class category shows its talent background")
-local framed = artOf(findGroup("categories", 22))
-check(framed.kind == "file", "a category shows a loading screen")
+check(warrior and tostring(warrior.fileID):find("category-warrior.tga", 1, true), "a class category shows its artwork")
+local alchemyArt = artOf(alchemyOrders)
+check(alchemyArt and tostring(alchemyArt.fileID):find("profession-alchemy.tga", 1, true),
+    "a quest category of a profession shows the artwork of its profession")
+questsView.banner.art:SetLoadingScreen(131824, true)
+local framed = questsView.banner.art.request
 check(framed.top and framed.top > 0 and framed.bottom < 1,
     "a framed loading screen is cropped to its painting, without the logo band")
 local blackrock = artOf(findGroup("ek", 25))
@@ -166,10 +169,24 @@ check(elwynnArt.kind == "file" and tostring(elwynnArt.fileID):find("zone-elwynn.
     "a zone Chronicles of Azeroth illustrates shows its own artwork")
 local steppes = artOf(findGroup("ek", 46))
 check(tostring(steppes.fileID):find("zone-blackrock-mountain.tga", 1, true), "the Burning Steppes banner shows Blackrock Mountain")
-local noArt = { kind = "zone", id = 99999, continent = ns.Const.Continent.EASTERN_KINGDOMS, chains = {}, art = 0 }
-local request = artOf(noArt)
-check(request.kind == "map" and request.dimmed and request.key:find("1415", 1, true),
-    "a zone without any artwork shows its continent, darkened")
+local noArt = { kind = "zone", id = 99999, continent = ns.Const.Continent.EASTERN_KINGDOMS, chains = {} }
+check(artOf(noArt) == nil, "a zone without an artwork of the addon stays plain")
+-- Every group of the quests and professions tabs has its artwork, and every artwork its file.
+for _, list in pairs(ns.Quests:Groups()) do
+    for _, group in ipairs(list) do
+        check(artOf(group), "the %s %d has an artwork", group.kind, group.id)
+    end
+end
+for _, art in ipairs({ ns.Theme.zoneArt, ns.Theme.bannerArt, ns.Theme.categoryArt, ns.Theme.professionArt }) do
+    for _, path in pairs(art) do
+        local file = io.open((path:gsub("^Interface\\AddOns\\", ""):gsub("\\", "/")), "rb")
+        check(file, "the artwork %s is shipped", path)
+        if file then file:close() end
+    end
+end
+for skillLine in pairs(ns.Data.Professions) do
+    check(ns.Theme.professionArt[skillLine], "the profession %d has an artwork", skillLine)
+end
 questsView:SelectContinent("ek")
 
 -- One wheel notch moves the zone cards one by one.

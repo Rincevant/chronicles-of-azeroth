@@ -212,17 +212,6 @@ function Compat.GetFactionName(factionID)
     return nil
 end
 
--- Map art: returns the layer description and its tile textures, or nil.
-function Compat.GetMapArt(uiMapID)
-    if not (C_Map and C_Map.GetMapArtLayers and C_Map.GetMapArtLayerTextures) then return nil end
-    local layers = C_Map.GetMapArtLayers(uiMapID)
-    local layer = layers and layers[1]
-    if not layer then return nil end
-    local textures = C_Map.GetMapArtLayerTextures(uiMapID, 1)
-    if not textures or #textures == 0 then return nil end
-    return layer, textures
-end
-
 -- Name of a map as the world map shows it.
 function Compat.GetMapName(uiMapID)
     local info = C_Map and C_Map.GetMapInfo and C_Map.GetMapInfo(uiMapID)

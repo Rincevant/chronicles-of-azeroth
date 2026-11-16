@@ -460,11 +460,11 @@ function UI.ProgressBar(parent, height)
 end
 
 -------------------------------------------------------------------------------
--- Artwork: zone maps, loading screens, or a plain gradient
+-- Artwork: a picture or a loading screen, or a plain gradient
 -------------------------------------------------------------------------------
 
--- Frame that crops artwork to its own bounds. SetMap shows the world map art of a zone,
--- SetFile a single texture (a loading screen); without art, a gradient remains.
+-- Frame that crops artwork to its own bounds. SetFile shows a single texture (an artwork
+-- of the addon, a loading screen); without art, a gradient remains.
 -- The game draws every child frame above the regions of its parent, so texts and borders
 -- created on the parent would be hidden by the artwork: they belong on `frame.overlay`.
 function UI.Art(parent)
@@ -475,7 +475,6 @@ function UI.Art(parent)
     frame.canvas = CreateFrame("Frame", nil, frame)
     frame.canvas:SetPoint("CENTER")
     frame.tiles = {}
-    frame.exploration = {}
     frame.overlay = CreateFrame("Frame", nil, frame)
     frame.overlay:SetAllPoints()
     frame.overlay:SetFrameLevel(frame.canvas:GetFrameLevel() + 1)
@@ -491,7 +490,6 @@ function UI.Art(parent)
 
     local function hideTiles()
         for _, tile in ipairs(frame.tiles) do tile:Hide() end
-        for _, tile in ipairs(frame.exploration) do tile:Hide() end
     end
 
     function frame.SetShade(_, fraction)
@@ -519,72 +517,6 @@ function UI.Art(parent)
         frame.request = nil
     end
 
-    -- Size of a tile file: full tiles are 256 pixels, the last one of a row or column is the
-    -- smallest power of two that holds the remainder, as the game lays them out.
-    local OVERLAY_TILE = 256
-    local function tileExtent(index, count, total)
-        if index < count - 1 then return OVERLAY_TILE, OVERLAY_TILE end
-        local pixels = total - OVERLAY_TILE * (count - 1)
-        local file = 16
-        while file < pixels do file = file * 2 end
-        return pixels, file
-    end
-
-    -- Exploration overlays: the painted areas the game reveals over the bare parchment.
-    local function drawExploration(overlays, scale)
-        local used = 0
-        for _, overlay in ipairs(overlays or {}) do
-            local width, height, offsetX, offsetY, files = overlay[1], overlay[2], overlay[3], overlay[4], overlay[5]
-            local columns = math.ceil(width / OVERLAY_TILE)
-            local rows = math.ceil(height / OVERLAY_TILE)
-            for index, fileID in ipairs(files) do
-                used = used + 1
-                local tile = frame.exploration[used]
-                if not tile then
-                    tile = frame.canvas:CreateTexture(nil, "BACKGROUND", nil, 2)
-                    frame.exploration[used] = tile
-                end
-                local column = (index - 1) % columns
-                local row = math.floor((index - 1) / columns)
-                local pixelWidth, fileWidth = tileExtent(column, columns, width)
-                local pixelHeight, fileHeight = tileExtent(row, rows, height)
-                tile:ClearAllPoints()
-                tile:SetSize(pixelWidth * scale, pixelHeight * scale)
-                tile:SetPoint("TOPLEFT", frame.canvas, "TOPLEFT", (offsetX + column * OVERLAY_TILE) * scale,
-                    -(offsetY + row * OVERLAY_TILE) * scale)
-                tile:SetTexture(fileID)
-                tile:SetTexCoord(0, pixelWidth / fileWidth, 0, pixelHeight / fileHeight)
-                tile:Show()
-            end
-        end
-    end
-
-    -- Map tiles are laid out on a canvas that covers the frame, centered, keeping the ratio.
-    local function drawMap(layer, textures, overlays, dimmed)
-        local width, height = frame:GetWidth(), frame:GetHeight()
-        local columns = math.ceil(layer.layerWidth / layer.tileWidth)
-        local scale = math.max(width / layer.layerWidth, height / layer.layerHeight)
-        local tileW, tileH = layer.tileWidth * scale, layer.tileHeight * scale
-        frame.canvas:SetSize(layer.layerWidth * scale, layer.layerHeight * scale)
-        for index, fileID in ipairs(textures) do
-            local tile = frame.tiles[index]
-            if not tile then
-                tile = frame.canvas:CreateTexture(nil, "BACKGROUND", nil, 1)
-                frame.tiles[index] = tile
-            end
-            local column = (index - 1) % columns
-            local row = math.floor((index - 1) / columns)
-            tile:ClearAllPoints()
-            tile:SetSize(tileW, tileH)
-            tile:SetPoint("TOPLEFT", frame.canvas, "TOPLEFT", column * tileW, -row * tileH)
-            tile:SetTexture(fileID)
-            tile:SetTexCoord(0, 1, 0, 1)
-            tile:SetVertexColor(dimmed and 0.45 or 1, dimmed and 0.45 or 1, dimmed and 0.45 or 1)
-            tile:Show()
-        end
-        drawExploration(overlays, scale)
-    end
-
     -- `top` and `bottom` keep a horizontal band of the texture, in fractions of its height.
     local function drawFile(fileID, ratio, top, bottom)
         local tile = frame.tiles[1] or frame.canvas:CreateTexture(nil, "BACKGROUND", nil, 1)
@@ -606,25 +538,7 @@ function UI.Art(parent)
         local request = frame.request
         if not request or not sized() then return end
         hideTiles()
-        if request.kind == "map" then
-            drawMap(request.layer, request.textures, request.overlays, request.dimmed)
-        else
-            drawFile(request.fileID, request.ratio, request.top, request.bottom)
-        end
-    end
-
-    -- Shows the world map art of a zone, fully explored, darkened when `dimmed` (a
-    -- continent standing for a zone); returns false when the client has none for it.
-    function frame.SetMap(_, uiMapID, dimmed)
-        local key = "map:" .. tostring(uiMapID) .. (dimmed and ":dimmed" or "")
-        if frame.request and frame.request.key == key then return true end
-        local layer, textures
-        if uiMapID then layer, textures = ns.Compat.GetMapArt(uiMapID) end
-        if not layer then return false end
-        frame.request = { key = key, kind = "map", layer = layer, textures = textures, dimmed = dimmed,
-            overlays = ns.Data.MapOverlays and ns.Data.MapOverlays[uiMapID] }
-        draw()
-        return true
+        drawFile(request.fileID, request.ratio, request.top, request.bottom)
     end
 
     -- Shows a single texture covering the frame, cropped to keep its ratio (width / height),

@@ -96,7 +96,7 @@ Theme.icons = {
 }
 
 -- Artwork shipped with the addon for the zones it illustrates, by area id: full-width cards
--- and banners of 768 x 256 pixels. Other zones show the art the data gives them.
+-- and banners of 768 x 256 pixels. A zone without one stays plain.
 local ASSET_PATH = "Interface\\AddOns\\ChroniquesAzeroth\\Assets\\"
 Theme.ZONE_ART_RATIO = 3
 Theme.zoneArt = {}
@@ -117,6 +117,25 @@ for areaID, file in pairs({
     [3277] = "warsonggulch", [3358] = "arathibasin", [25] = "blackrock-mountain",
 }) do
     Theme.zoneArt[areaID] = ASSET_PATH .. "zone-" .. file .. ".tga"
+end
+-- Artwork of the quest categories, by quest sort, and of the professions, by skill line,
+-- built like the zones from tools/zone_art.csv. A quest category of a profession shows
+-- the artwork of its profession.
+Theme.categoryArt, Theme.professionArt = {}, {}
+for sortID, file in pairs({
+    [0] = "misc", [1] = "epic", [22] = "seasonal", [61] = "warlock", [81] = "warrior", [82] = "shaman",
+    [141] = "paladin", [161] = "mage", [162] = "rogue", [261] = "hunter", [262] = "priest", [263] = "druid",
+    [284] = "special", [344] = "legendary", [364] = "darkmoonfaire", [365] = "ahnqirajwar",
+    [366] = "lunarfestival", [367] = "reputation", [368] = "invasion", [369] = "midsummer", [666] = "camping",
+}) do
+    Theme.categoryArt[sortID] = ASSET_PATH .. "category-" .. file .. ".tga"
+end
+for skillLine, file in pairs({
+    [164] = "blacksmithing", [171] = "alchemy", [182] = "herbalism", [186] = "mining", [393] = "skinning",
+    [165] = "leatherworking", [202] = "engineering", [197] = "tailoring", [333] = "enchanting",
+    [185] = "cooking", [129] = "firstaid", [356] = "fishing",
+}) do
+    Theme.professionArt[skillLine] = ASSET_PATH .. "profession-" .. file .. ".tga"
 end
 -- Banners that show another artwork than the card: Blackrock Mountain stands for the Burning
 -- Steppes, its neighbour, which shows the whole manifest without a card of its own.

@@ -93,7 +93,7 @@ function View:FillProfessionRow(row, profession)
     local complete = summary.total > 0 and summary.done >= summary.total
     row.count:SetText(#profession.recipes > 0 and string.format("%d / %d", summary.done, summary.total) or "")
     row.count:SetTextColor(Theme.Unpack(complete and C.green or C.text))
-    if not row.art:SetArtwork(ns.Data.Artwork.professions[profession.skillLine]) then row.art:Clear() end
+    if not row.art:SetFile(Theme.professionArt[profession.skillLine], Theme.ZONE_ART_RATIO) then row.art:Clear() end
     row.border:SetColor(self.selected == profession.skillLine and C.gold or (complete and C.greenBorder or C.borderDim))
     row:SetScript("OnClick", function()
         ns.MainFrame:ForgetHistory()
@@ -412,7 +412,7 @@ function View:Refresh()
     local trackingName = tracking == ns.Const.Tracking.ACCOUNT and L.TRACKING_ACCOUNT or L.TRACKING_CHARACTER
     banner.caption:SetText(string.format(L.RECIPES_CAPTION, summary.done, summary.total, trackingName))
     banner.ring:SetProgress(summary.done, summary.total, summary.total > 0 and summary.done >= summary.total and L.COMPLETE or L.DONE)
-    if not banner.art:SetArtwork(ns.Data.Artwork.professions[self.selected]) then banner.art:Clear() end
+    if not banner.art:SetFile(Theme.professionArt[self.selected], Theme.ZONE_ART_RATIO) then banner.art:Clear() end
     self.recipesTitle:SetText(string.format(L.RECIPES_OF, name):upper())
     self:RefreshRecipes()
 

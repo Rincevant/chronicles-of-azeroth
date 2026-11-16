@@ -9,9 +9,9 @@ the notes of its GitHub release.
 
 - 5,873 quests across the zones of both continents, the other zones and the quest categories
   (classes, professions, events), instead of 2,307 quests in 46 zones. The zones Chronicles of
-  Azeroth illustrates keep their artwork; the zones of the Forever client, Blackrock Mountain,
-  the Deeprun Tram and the battlegrounds get theirs, and the others show their map or a
-  loading screen.
+  Azeroth illustrates keep their artwork, and every other zone, quest category and profession
+  gets its own, built from screenshots of the game; dungeons and raids show their loading
+  screen.
 - Quest details tell the giver and the turn-in NPC, with a map waypoint, the experience and
   the reputation. A quest out of reach is shown locked, with the reason: level, prerequisite
   or profession rank.

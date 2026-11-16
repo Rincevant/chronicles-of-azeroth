@@ -16,7 +16,7 @@ local function buildCategoryCard(row)
 end
 
 -- Artwork of the categories, which the client defines: a category named after a class shows
--- its talent background, one named after a profession its loading screen, and the others
+-- its talent background, one named after a profession the artwork of the addon, and the others
 -- take loading screens from the pool, so that no two cards of the list look the same.
 local function categoryArtwork(categories)
     local artwork = ns.Data.Artwork
@@ -25,9 +25,9 @@ local function categoryArtwork(categories)
         local name = ns.Compat.GetClassName(classID)
         if name then byName[name] = entry end
     end
-    for skillLine, entry in pairs(artwork.professions) do
+    for skillLine, file in pairs(Theme.professionArt) do
         local name = ns.Names.SkillLine(skillLine)
-        if name then byName[name] = entry end
+        if name then byName[name] = { art = file, artRatio = Theme.ZONE_ART_RATIO } end
     end
     local result, used = {}, {}
     for _, category in ipairs(categories) do

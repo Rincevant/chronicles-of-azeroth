@@ -7,9 +7,8 @@ Three sources are combined:
   plus the quest titles of its translations and English names, used when the client cannot
   provide a text.
 * The game client tables of the targeted WoW Forever build, as published by wago.tools:
-  recipes, instances, encounters, collectible identifiers, map exploration overlays, the
-  loading screens that stand for zones without a drawable map, the talent backgrounds of the
-  class categories, and the localized strings the client API does not expose.
+  recipes, instances, encounters, collectible identifiers, the loading screens of the
+  instances and of the other tabs, and the localized strings the client API does not expose.
 * Wowhead (https://www.wowhead.com/forever): the localized quest titles the QuestieDB
   translations lack, read from the JSON of its quest tooltips, and the rank each recipe is
   learned at when no client table gives it (trainers' recipes), read from the recipe list of
@@ -42,7 +41,6 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from collections import defaultdict
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -63,8 +61,7 @@ WOWHEAD_LOCALES = {"frFR": 2}
 TABLES = ("QuestV2", "AreaTable", "Map", "LoadingScreens", "ChrRaces", "ChrClasses", "QuestSort",
           "SkillLine", "SkillLineAbility", "SpellReagents", "SpellEffect", "ItemEffect",
           "ItemXItemEffect", "DungeonEncounter", "Mount", "BattlePetSpecies", "Toy",
-          "TransmogSet", "CharTitles", "UiMapXMapArt", "UiMapArtTile", "WorldMapOverlay",
-          "WorldMapOverlayTile", "TalentTab", "ItemSparse")
+          "TransmogSet", "CharTitles", "TalentTab", "ItemSparse")
 LOCALIZED_TABLES = ("AreaTable", "UiMap", "QuestSort", "SkillLine", "DungeonEncounter", "Toy", "ItemSparse")
 
 # Quest flags (cmangos quest_template conventions used by QuestieDB).
@@ -107,39 +104,6 @@ QUEST_ZONE_FIXES = {
     97979: 141,  # The Goddess Provides, the only quest of the Night Elf sort, played in Teldrassil
 }
 
-# Zones without a map of their own that hold instances, whose loading screens then stand for
-# the zone. No client table links such a zone to its instances, so the link is stated here.
-ZONE_INSTANCES = {
-    25: (230, 229),  # Blackrock Mountain: Blackrock Depths, Blackrock Spire
-}
-# Maps whose loading screen stands for the quest categories other than the classes, which
-# show their talent background. Keys are quest sorts, and areas that only name quests.
-CATEGORY_SCREENS = {
-    0: 0,          # Miscellaneous: Eastern Kingdoms
-    1: 469,        # Epic: Blackwing Lair
-    22: 30,        # Seasonal: Alterac Valley, under the snow of the Winter Veil
-    24: 349,       # Herbalism: Maraudon, its overgrown caverns
-    101: 48,       # Fishing: Blackfathom Deeps
-    121: 230,      # Blacksmithing: Blackrock Depths, the Dark Iron forges
-    181: 289,      # Alchemy: Scholomance, its laboratories
-    182: 429,      # Leatherworking: Dire Maul, in Feralas
-    201: 90,       # Engineering: Gnomeregan
-    264: 329,      # Tailoring: Stratholme, its runecloth and felcloth
-    284: 309,      # Special: Zul'Gurub
-    304: 36,       # Cooking: the Deadmines, a pirate ship galley
-    324: 189,      # First Aid: Scarlet Monastery
-    344: 409,      # Legendary: Molten Core, home of the first legendary weapons
-    364: 34,       # Darkmoon Faire: the Stockade, Stormwind, near the faire's Elwynn grounds
-    365: 531,      # Ahn'Qiraj War: Temple of Ahn'Qiraj
-    366: 1,        # Lunar Festival: Kalimdor, around Moonglade
-    367: 529,      # Reputation: Arathi Basin, fought for the League of Arathor and the Defilers
-    368: 533,      # Invasion: Naxxramas, the Scourge
-    369: 229,      # Midsummer: Blackrock Spire, for the fires
-    666: 37,       # Camping: the forests of Azshara Crater
-    676: 489,      # Night Elf: Warsong Gulch, the Silverwing Sentinels
-    16941: 70,     # Crafting: Uldaman, the titans' workshops
-}
-
 # Loading screens standing for the instances whose own screen the client does not ship (the
 # Season of Discovery ones), all of places of the Forever world: the screen of another map,
 # or a client file with the original framed layout. Each differs from the others of its list.
@@ -153,21 +117,6 @@ INSTANCE_SCREENS = {
     2856: 189,    # Scarlet Enclave: Scarlet Monastery
 }
 
-# Maps whose loading screen stands for each profession on the professions tab.
-PROFESSION_SCREENS = {
-    164: 230,   # Blacksmithing: Blackrock Depths, the Dark Iron forges
-    171: 289,   # Alchemy: Scholomance, its laboratories
-    165: 429,   # Leatherworking: Dire Maul, in Feralas
-    202: 90,    # Engineering: Gnomeregan
-    197: 329,   # Tailoring: Stratholme, its runecloth and felcloth
-    333: 109,   # Enchanting: the Sunken Temple
-    185: 36,    # Cooking: the Deadmines, a pirate ship galley
-    129: 189,   # First Aid: Scarlet Monastery
-    356: 48,    # Fishing: Blackfathom Deeps
-    182: 349,   # Herbalism: Maraudon, its overgrown caverns
-    186: 389,   # Mining: Ragefire Chasm, under Orgrimmar
-    393: 47,    # Skinning: Razorfen Kraul, among the quilboar and their beasts
-}
 # Maps whose loading screen stands for each kind of collection on the collections tab.
 COLLECTION_SCREENS = {
     "mounts": 529,   # Arathi Basin, its stables
@@ -265,17 +214,6 @@ class ShippedFiles:
 
     def _save(self) -> None:
         self.path.write_text(json.dumps(self.known, indent=0, sort_keys=True), encoding="utf-8")
-
-    def prefetch(self, file_ids) -> None:
-        """Probes many files at once; the answers are then read from the cache."""
-        missing = sorted({f for f in file_ids if str(f) not in self.known})
-        if not missing:
-            return
-        log(f"checking {len(missing)} client files")
-        with ThreadPoolExecutor(max_workers=8) as pool:
-            for file_id, shipped in zip(missing, pool.map(self._probe, missing)):
-                self.known[str(file_id)] = shipped
-        self._save()
 
     def __call__(self, file_id: int) -> bool:
         key = str(file_id)
@@ -614,13 +552,6 @@ class World:
         self.loading = {to_int(r["ID"]): r for r in read_table(cache, "LoadingScreens")}
         self.sub_to_parent = {to_int(k): to_int(v) for k, v in questie["subZoneToParent"].items()}
         self.area_to_ui_map = {to_int(k): to_int(v) for k, v in questie["areaToUiMap"].items()}
-        art_of_map = {to_int(r["UiMapID"]): to_int(r["UiMapArtID"]) for r in read_table(cache, "UiMapXMapArt")
-                      if to_int(r["PhaseID"]) == 0}
-        tiles_of_art = defaultdict(list)
-        for row in read_table(cache, "UiMapArtTile"):
-            if to_int(row["LayerIndex"]) == 0:
-                tiles_of_art[to_int(row["UiMapArtID"])].append(to_int(row["FileDataID"]))
-        self.map_tiles = {ui_map: tiles_of_art.get(art, []) for ui_map, art in art_of_map.items()}
         # Instance maps own an area; QuestieDB lists alternative areas used by dungeon quests.
         self.area_to_instance = {}
         for map_id, row in self.maps.items():
@@ -688,11 +619,6 @@ class World:
         row = self.maps.get(map_id) if map_id is not None else None
         return to_int(row["InstanceType"]) if row else 0
 
-    def map_drawable(self, ui_map: int | None) -> bool:
-        """Whether the client ships every tile of a zone map."""
-        tiles = self.map_tiles.get(ui_map) if ui_map else None
-        return bool(tiles) and all(self.shipped(f) for f in tiles)
-
     def own_map(self, area_id: int) -> int | None:
         """Map that an area is the whole of, such as the Deeprun Tram."""
         row = self.areas.get(area_id)
@@ -705,18 +631,6 @@ class World:
         exploration bit, so no player can stand in it."""
         row = self.areas.get(area_id)
         return bool(ui_map) or self.own_map(area_id) is not None or bool(row and to_int(row["AreaBit"]) > 0)
-
-    def zone_art(self, area_id: int, ui_map: int | None) -> int | None:
-        """Artwork of a zone whose map cannot be drawn: the loading screen of the map the zone
-        is the whole of, or of an instance it holds, or 0 when there is none. None when the
-        zone map itself can be drawn."""
-        if self.map_drawable(ui_map):
-            return None
-        for map_id in (self.own_map(area_id), *ZONE_INSTANCES.get(area_id, ())):
-            file_id = self.loading_screen(map_id) if map_id is not None else 0
-            if file_id:
-                return file_id
-        return 0
 
     def loading_screen(self, map_id: int) -> int:
         """Loading screen of a map. The images of the original client (the narrow screen
@@ -869,25 +783,15 @@ def build_quests(world: World, questie: dict, valid_ids: set[int]) -> tuple[dict
                 "levels": [min(levels), max(levels)] if levels else None}
 
     ui_maps = {area_id: world.area_to_ui_map.get(area_id) or None for area_id in zones}
-    world.shipped.prefetch(f for ui_map in ui_maps.values() for f in world.map_tiles.get(ui_map, []))
     zone_rows = {}
     for area_id, entry in zones.items():
         ui_map = ui_maps[area_id]
         row = {"continent": world.continent_of(area_id), "uiMap": ui_map, **describe(entry["quests"])}
         if not world.is_place(area_id, ui_map):
             row["continent"] = CONTINENT_CATEGORIES
-            row.update(category_screen(world, area_id))
-        else:
-            art = world.zone_art(area_id, ui_map)
-            if art is not None:
-                row.update(world.screen_art(art))
         zone_rows[area_id] = row
-    without_map = {a: r["art"] for a, r in zone_rows.items() if "art" in r}
-    log(f"zones without a drawable map: {len(without_map)} {without_map}; "
-        f"label areas listed as categories: {[a for a, r in zone_rows.items() if r['continent'] == CONTINENT_CATEGORIES]}")
+    log(f"label areas listed as categories: {[a for a, r in zone_rows.items() if r['continent'] == CONTINENT_CATEGORIES]}")
     sort_rows = {sort_id: describe(entry["quests"]) for sort_id, entry in sorts.items()}
-    for sort_id, art in category_art(world, sorts).items():
-        sort_rows[sort_id].update(art)
 
     referenced = {"npcs": set(), "objects": set(), "items": set()}
     for row in quests.values():
@@ -977,15 +881,6 @@ def fold_crafting_orders(quests: dict, zones: dict, sorts: dict) -> None:
     log(f"crafting orders moved to their profession category: {sum(len(q) for q in moved.values())}")
 
 
-def category_screen(world: World, key: int) -> dict:
-    """Loading screen chosen for a quest category, if the client ships it."""
-    map_id = CATEGORY_SCREENS.get(key)
-    file_id = world.loading_screen(map_id) if map_id is not None else 0
-    if map_id is not None and not file_id:
-        log(f"WARNING: the loading screen chosen for category {key} is not shipped: map {map_id}")
-    return world.screen_art(file_id) if file_id else {}
-
-
 def instance_art(world: World, map_id: int) -> dict:
     """Loading screen of an instance, or the one chosen for it when the client does not ship
     its own."""
@@ -1024,30 +919,9 @@ def class_backgrounds(world: World) -> dict[int, dict]:
     return result
 
 
-def category_art(world: World, sorts: dict) -> dict[int, dict]:
-    """Artwork of the quest categories. A class category shows the talent background of the
-    class, linked through the English names of the category and the class; any other shows
-    the loading screen chosen for it."""
-    sort_names = {to_int(r["ID"]): r["SortName_lang"] for r in read_table(world.cache, "QuestSort", "enUS")}
-    class_ids = {r["Name_lang"]: to_int(r["ID"]) for r in read_table(world.cache, "ChrClasses")}
-    backgrounds = class_backgrounds(world)
-    result = {}
-    for sort_id in sorts:
-        background = backgrounds.get(class_ids.get(sort_names.get(sort_id)))
-        if background:
-            result[sort_id] = dict(background)
-        else:
-            result[sort_id] = category_screen(world, sort_id)
-            if sort_id not in CATEGORY_SCREENS:
-                log(f"WARNING: no place chosen for category {sort_id}")
-    log(f"category artwork: {sum(1 for a in result.values() if a.get('artRatio'))} talent backgrounds, "
-        f"{sum(1 for a in result.values() if a and not a.get('artRatio'))} chosen loading screens")
-    return result
-
-
-def build_artwork(world: World, professions: dict, instances: dict) -> dict:
+def build_artwork(world: World, instances: dict) -> dict:
     """Artwork of the groups listed on the left of the other tabs: the talent background of
-    each class, a loading screen chosen for each profession and collection kind, and a pool
+    each class, a loading screen chosen for each collection kind, and a pool
     of loading screens for the groups the client defines (Legacy challenge categories), so
     that every card of a list shows a different picture."""
     def screen(map_id: int) -> dict:
@@ -1056,9 +930,6 @@ def build_artwork(world: World, professions: dict, instances: dict) -> dict:
             log(f"WARNING: the loading screen of map {map_id} is not shipped")
         return world.screen_art(file_id) if file_id else {}
 
-    missing = sorted(set(professions) - set(PROFESSION_SCREENS))
-    if missing:
-        log(f"WARNING: no loading screen chosen for professions {missing}")
     pool, seen = [], set()
     for map_id in [0, 1] + sorted(instances):
         if map_id in (0, 1):
@@ -1071,11 +942,10 @@ def build_artwork(world: World, professions: dict, instances: dict) -> dict:
             pool.append(entry)
     artwork = {
         "classes": class_backgrounds(world),
-        "professions": {skill: screen(map_id) for skill, map_id in PROFESSION_SCREENS.items() if skill in professions},
         "collections": {kind: screen(map_id) for kind, map_id in COLLECTION_SCREENS.items()},
         "pool": pool,
     }
-    log(f"artwork: {len(artwork['classes'])} classes, {len(artwork['professions'])} professions, "
+    log(f"artwork: {len(artwork['classes'])} classes, "
         f"{len(artwork['collections'])} collection kinds, {len(pool)} loading screens in the pool")
     return artwork
 
@@ -1322,56 +1192,6 @@ def build_instances(cache: Path, world: World, instance_quests: dict[int, list[i
 
 
 # ---------------------------------------------------------------------------
-# Map exploration overlays
-# ---------------------------------------------------------------------------
-
-OVERLAY_TILE_SIZE = 256
-
-
-def build_map_overlays(cache: Path, ui_maps: set[int], shipped: ShippedFiles) -> dict:
-    """Exploration overlays of the zone maps, which the game draws over the bare parchment
-    once an area is discovered. The client only lists the discovered ones, so all of them
-    are shipped: zone artwork then always shows the painted map.
-    Row per map: { {width, height, offsetX, offsetY, {fileIDs by row then column}}, ... },
-    in the pixel space of the map art layer."""
-    art_of_map = {to_int(r["UiMapID"]): to_int(r["UiMapArtID"]) for r in read_table(cache, "UiMapXMapArt")
-                  if to_int(r["PhaseID"]) == 0 and to_int(r["UiMapID"]) in ui_maps}
-    tiles = defaultdict(list)
-    for row in read_table(cache, "WorldMapOverlayTile"):
-        if to_int(row["LayerIndex"]) == 0:
-            tiles[to_int(row["WorldMapOverlayID"])].append(
-                (to_int(row["RowIndex"]), to_int(row["ColIndex"]), to_int(row["FileDataID"])))
-    overlays_of_art = defaultdict(list)
-    for row in read_table(cache, "WorldMapOverlay"):
-        if to_int(row["PlayerConditionID"]) == 0:
-            overlays_of_art[to_int(row["UiMapArtID"])].append(row)
-
-    candidates = {}
-    for ui_map, art in art_of_map.items():
-        for row in overlays_of_art.get(art, []):
-            width, height = to_int(row["TextureWidth"]), to_int(row["TextureHeight"])
-            columns = -(-width // OVERLAY_TILE_SIZE)
-            rows = -(-height // OVERLAY_TILE_SIZE)
-            files = [f for _, _, f in sorted(tiles.get(to_int(row["ID"]), []))]
-            # An overlay whose tiles do not cover its size would be drawn misplaced.
-            if width and height and len(files) == columns * rows and all(files):
-                candidates.setdefault(ui_map, []).append(
-                    (to_int(row["ID"]), [width, height, to_int(row["OffsetX"]), to_int(row["OffsetY"]), files]))
-    shipped.prefetch(f for entries in candidates.values() for _, entry in entries for f in entry[4])
-
-    overlays = {}
-    dropped = 0
-    for ui_map, entries in candidates.items():
-        kept = [entry for _, entry in sorted(entries) if all(shipped(f) for f in entry[4])]
-        dropped += len(entries) - len(kept)
-        if kept:
-            overlays[ui_map] = kept
-    log(f"map overlays: {sum(len(v) for v in overlays.values())} on {len(overlays)} maps "
-        f"({len(ui_maps - set(overlays))} zone maps without any, {dropped} overlays not shipped)")
-    return overlays
-
-
-# ---------------------------------------------------------------------------
 # Collections
 # ---------------------------------------------------------------------------
 
@@ -1549,14 +1369,13 @@ def main() -> int:
     fold_crafting_orders(quests, zones, sorts)
     instances, encounters = build_instances(cache, world, extra["instances"], quests)
     collections = build_collections(cache, served)
-    overlays = build_map_overlays(cache, {z["uiMap"] for z in zones.values() if z.get("uiMap")}, shipped)
     entities = build_entities(world, questie, referenced)
     encounter_ids = {boss for instance in instances.values() for boss in instance["bosses"]}
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     attribution = "Quest structure from QuestieDB (GPL-3.0); identifiers from the WoW Forever client tables."
     write_lua("Quests.lua", attribution, [("Quests", quests)], args.build)
-    write_lua("Zones.lua", attribution, [("Zones", zones), ("QuestSorts", sorts), ("MapOverlays", overlays)],
+    write_lua("Zones.lua", attribution, [("Zones", zones), ("QuestSorts", sorts)],
               args.build)
     write_lua("Entities.lua", "Quest givers and recipe sources from QuestieDB (GPL-3.0).",
               [("Npcs", entities["npcs"]), ("Objects", entities["objects"]), ("Items", entities["items"])], args.build)
@@ -1566,7 +1385,7 @@ def main() -> int:
     write_lua("Collections.lua", "Collectible identifiers from the client tables.",
               [("Collections", collections)], args.build)
     write_lua("Artwork.lua", "Artwork identifiers from the client tables.",
-              [("Artwork", build_artwork(world, professions, instances))], args.build)
+              [("Artwork", build_artwork(world, instances))], args.build)
     write_lua("Constants.lua", "Race bits from the client tables.", [("Races", build_races(cache)),
               ("Build", args.build)], args.build)
     item_ids = shown_items(professions, collections["toys"], entities)

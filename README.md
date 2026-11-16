@@ -8,8 +8,8 @@
   that unfold; for each quest its status, level, prerequisites, follow-ups, giver and turn-in
   NPC (with a map waypoint), experience and reputation rewards. A quest is shown locked, with
   the reason, while the character's level, its prerequisites or the rank of the profession it
-  needs fall short. The zones Chronicles of Azeroth illustrates keep their artwork; the others
-  show their map, or a loading screen.
+  needs fall short. Every zone and quest category has its artwork, built from screenshots
+  of the game.
 - **Professions**: the complete catalogue of each profession for the Forever client, the
   recipes already learned, the reagents, and how to obtain each recipe (trainer, vendor,
   drop, quest).
@@ -116,7 +116,8 @@ makes no network access.
   the client cannot provide a text.
 - The client tables of the targeted WoW Forever build, as published by
   [wago.tools](https://wago.tools): recipes, instances, encounters, collectible identifiers,
-  map overlays, loading screens and the few localized strings the client API does not expose.
+  the loading screens of the instances and the few localized strings the client API does not
+  expose.
 - [Wowhead Forever](https://www.wowhead.com/forever): the localized quest titles QuestieDB
   lacks, read from its quest tooltips one request every 10 to 15 seconds, and the rank a
   recipe is learned at when no client table gives it. The profession pages answer browsers

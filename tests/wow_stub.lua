@@ -272,8 +272,6 @@ function C_Map.GetMapInfo(uiMapID)
     local parents = { [2000] = 1429, [1429] = 1415, [1415] = 947 }
     return { mapID = uiMapID, name = "Map " .. uiMapID, parentMapID = parents[uiMapID] or 0 }
 end
-function C_Map.GetMapArtLayers() return { { layerWidth = 1002, layerHeight = 668, tileWidth = 256, tileHeight = 256 } } end
-function C_Map.GetMapArtLayerTextures() return { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 } end
 function C_Map.CanSetUserWaypointOnMap() return true end
 function C_Map.SetUserWaypoint() Stub.waypoint = true end
 UiMapPoint = { CreateFromCoordinates = function(map, x, y) return { map = map, x = x, y = y } end }

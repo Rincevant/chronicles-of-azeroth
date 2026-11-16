@@ -18,34 +18,21 @@ local GROUP_BUTTONS = {
     { value = "categories", label = "CONTINENT_CATEGORIES", continents = { Continent.CATEGORIES } },
 }
 
--- Continent maps that stand for a zone whose own artwork cannot be drawn.
-local CONTINENT_MAPS = { [Continent.EASTERN_KINGDOMS] = 1415, [Continent.KALIMDOR] = 1414 }
-local WORLD_MAP = 947
 
 -------------------------------------------------------------------------------
 -- Zone cards
 -------------------------------------------------------------------------------
 
--- Artwork of a zone or a category: the map or the picture chosen by the data (a loading
--- screen for a zone without a map, a talent background for a class); a zone that has none
--- of them shows its continent, darkened.
+-- Artwork of a zone or a category: the one the addon ships for it, a quest category of a
+-- profession showing that of its profession; without one, the card stays plain.
 local function ShowGroupArt(art, group, banner)
-    -- The zones Chronicles of Azeroth illustrates show their own artwork first.
-    local own = group.kind == "zone" and ((banner and Theme.bannerArt[group.id]) or Theme.zoneArt[group.id])
+    local own
+    if group.kind == "zone" then
+        own = (banner and Theme.bannerArt[group.id]) or Theme.zoneArt[group.id]
+    else
+        own = Theme.categoryArt[group.id] or (group.skill and Theme.professionArt[group.skill])
+    end
     if own and art:SetFile(own, Theme.ZONE_ART_RATIO) then return end
-    if group.art and group.art ~= 0 then
-        if group.artRatio then
-            if art:SetFile(group.art, group.artRatio) then return end
-        elseif art:SetLoadingScreen(group.art, group.artFramed) then
-            return
-        end
-    elseif group.art == nil and group.uiMap and art:SetMap(group.uiMap) then
-        return
-    end
-    if group.kind == "zone" and group.continent ~= Continent.CATEGORIES
-        and art:SetMap(CONTINENT_MAPS[group.continent] or WORLD_MAP, true) then
-        return
-    end
     art:Clear()
 end
 

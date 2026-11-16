@@ -74,7 +74,8 @@ rejects the size of QuestieDB's tables), and the client tables of the build give
 `tools/build_data.py` and `Core/Constants.lua`, which change together. `ChroniquesAzeroth/Assets/`
 holds the TGA artwork, rebuilt by `tools/import_zone_art.py`; an artwork added since the original
 manifest is listed in `tools/zone_art.csv` with its source and the band of the image that shows
-its subject.
+its subject. Zones, quest categories and professions show only this artwork, never a map or a
+loading screen of the client.
 
 ## Checks
 
