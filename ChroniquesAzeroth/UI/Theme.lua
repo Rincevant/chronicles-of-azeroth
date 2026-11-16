@@ -51,6 +51,25 @@ Theme.fonts = {
     fancy = WESTERN[GetLocale()] and "Fonts\\MORPHEUS.TTF" or (STANDARD_TEXT_FONT or "Fonts\\FRIZQT__.TTF"),
 }
 
+-- Text sizes are written for the standard text of the game, GameFontNormal, at its default
+-- size: each one is scaled by the size the client gives that font, so that the text of the
+-- addon follows the text of the game.
+local REFERENCE_SIZE = 12
+
+function Theme.ClientFontSize()
+    local font = GameFontNormal
+    local size = font and font.GetFont and select(2, font:GetFont())
+    return (type(size) == "number" and size > 0) and size or REFERENCE_SIZE
+end
+
+function Theme.FontSize(size)
+    return math.floor((size or REFERENCE_SIZE) * Theme.ClientFontSize() / REFERENCE_SIZE + 0.5)
+end
+
+function Theme.SetFont(object, size, family)
+    object:SetFont(Theme.fonts[family or "body"], Theme.FontSize(size), "")
+end
+
 Theme.icons = {
     addon = "Interface\\Icons\\INV_Misc_Map02",
     quests = "Interface\\Icons\\INV_Misc_Note_01",

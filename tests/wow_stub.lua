@@ -140,6 +140,8 @@ function DEFAULT_CHAT_FRAME.AddMessage(_, text) table.insert(Stub.chat, text) en
 UISpecialFrames = {}
 SlashCmdList = {}
 STANDARD_TEXT_FONT = "Fonts\\FRIZQT__.TTF"
+Stub.fontSize = 12
+GameFontNormal = { GetFont = function() return STANDARD_TEXT_FONT, Stub.fontSize, "" end }
 
 -------------------------------------------------------------------------------
 -- Events and timers

@@ -42,6 +42,9 @@ client's 32-bit `bit` library.
   lays its tab out on the page of `Views/Layout.lua`: the groups on the left, the selected group
   and item in the middle, the items of the group on the right. A tab appears when the TOC loads
   its view.
+- Text sizes are written for the default size of the standard text of the game and set
+  through `Theme.SetFont`, which scales them by the size the client gives that text, so that
+  the window follows the text of the game.
 - Event handlers, message handlers, list rows and view refreshes run through `ns:SafeCall`, so
   that one failure is logged with its traceback instead of breaking the window.
 

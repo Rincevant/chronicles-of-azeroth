@@ -47,6 +47,7 @@ the notes of its GitHub release.
 - The window can be moved, resized and scaled (`/ca scale`); its place and size are kept. It
   also opens from the addon compartment of the game, and the minimap button can be hidden
   (`/ca minimap`).
+- The text of the window takes the size of the text of the game.
 - A log is kept in the saved variables: the APIs the client provides, the quests turned in
   and any error of the addon, which no longer interrupts the game. `/ca help`, `/ca log`,
   `/ca debug`, `/ca rescan`, `/ca reset` and `/ca clearlog` complete `/ca diag`.

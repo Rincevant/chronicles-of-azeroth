@@ -73,6 +73,7 @@ function Diagnostics:Run()
     local data = ns.Data
     ns.Log:Info("Data: build %s, %d quests, %d professions, %d instances", tostring(data.Build),
         self.Count(data.Quests), self.Count(data.Professions), self.Count(data.Instances))
+    ns.Log:Info("Client font size: %s", tostring(ns.Theme.ClientFontSize()))
 end
 
 -- Full report for /ca diag, printed to the chat and written to the log.
@@ -86,6 +87,7 @@ function Diagnostics:Report()
     lines[#lines + 1] = string.format("Texts: %d requested, %d received, %d fallbacks, %d pending",
         requested, received, fallbacks, pending)
     lines[#lines + 1] = string.format("Characters known: %d", ns.Database:CountCharacters())
+    lines[#lines + 1] = string.format("Client font size: %s", tostring(ns.Theme.ClientFontSize()))
     for _, line in ipairs(lines) do ns.Log:Info("diag: %s", line) end
     return lines
 end

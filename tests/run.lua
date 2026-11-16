@@ -790,6 +790,12 @@ check(not frame:IsShown(), "/ca toggles the window closed")
 -- versions before 0.26
 -------------------------------------------------------------------------------
 
+-- Text sizes follow the size the client gives its standard text.
+check(ns.Theme.FontSize(13) == 13, "text keeps its size with the default client font")
+Stub.fontSize = 10
+check(ns.Theme.FontSize(12) == 10 and ns.Theme.FontSize(18) == 15, "text follows a smaller client font")
+Stub.fontSize = 12
+
 -- The report gathers the version, the character, the tab shown before and the last log lines.
 SlashCmdList.CHRONIQUESAZEROTH("")
 ns.MainFrame:SelectTab("quests")
