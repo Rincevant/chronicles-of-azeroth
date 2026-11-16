@@ -5,6 +5,8 @@ the notes of its GitHub release.
 
 ## Unreleased
 
+- **Legacy challenges** tab, read from the game, with their criteria and rewards; within reach,
+  the categories of another class or of an unlearned profession are left out.
 - **Dungeons** and **Raids** tabs: the bosses of each instance, defeated or not, and its quests,
   which a link from a recipe or a quest opens on their instance.
 - Quests and professions come from data generated from the client tables of the Forever
