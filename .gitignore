@@ -11,3 +11,6 @@ Thumbs.db
 
 # Packaging output of the release workflow
 build/
+
+# Downloads of the data generator
+.cache/
