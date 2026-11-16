@@ -74,6 +74,7 @@ function View:Build(frame)
     self.hint = UI.Text(panel, 12, C.blue)
     self.hint:SetPoint("LEFT", prepare, "RIGHT", 16, 0)
     self.hint:SetPoint("RIGHT", panel, "RIGHT", -28, 0)
+    self.hint:SetText(L.FEEDBACK_SELECT_HINT)
 
     local box = UI.Panel(panel, C.panelDark, C.borderDim)
     box:SetPoint("TOPLEFT", 28, -142)

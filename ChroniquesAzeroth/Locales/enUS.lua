@@ -236,6 +236,7 @@ ns:RegisterLocale("enUS", {
     FEEDBACK_TITLE = "Your feedback",
     FEEDBACK_DESCRIPTION = "Chronicles cannot send data to the Internet. Prepare the report, copy it with Ctrl+C, then paste it into the feedback channel you choose.",
     PREPARE_REPORT = "PREPARE REPORT",
+    FEEDBACK_SELECT_HINT = "Ctrl+C copies the selected text. Nothing is sent automatically.",
     FEEDBACK_COPY_HINT = "The report is selected: press Ctrl+C to copy it. Nothing is sent automatically.",
     FEEDBACK_DESTINATION = "Bugs: github.com/Rincevant/chronicles-of-azeroth/issues  ·  Community: discord.gg/hmQTKkdRzB",
     COPY_DISCORD = "COPY DISCORD LINK",

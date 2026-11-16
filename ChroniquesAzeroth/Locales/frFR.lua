@@ -240,6 +240,7 @@ ns:RegisterLocale("frFR", {
     FEEDBACK_TITLE = "Vos retours",
     FEEDBACK_DESCRIPTION = "Chroniques ne peut pas envoyer de données sur Internet. Préparez le rapport, copiez-le avec Ctrl+C, puis collez-le dans le canal de retours choisi.",
     PREPARE_REPORT = "PRÉPARER LE RAPPORT",
+    FEEDBACK_SELECT_HINT = "Ctrl+C copie le texte sélectionné. Aucun envoi automatique.",
     FEEDBACK_COPY_HINT = "Le rapport est sélectionné : Ctrl+C pour le copier. Aucun envoi automatique.",
     FEEDBACK_DESTINATION = "Bugs : github.com/Rincevant/chronicles-of-azeroth/issues  ·  Communauté : discord.gg/hmQTKkdRzB",
     COPY_DISCORD = "COPIER LE LIEN DISCORD",
