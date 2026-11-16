@@ -72,7 +72,9 @@ generator reads QuestieDB through `tools/questie_dump.lua`, which needs PUC Lua 
 rejects the size of QuestieDB's tables), and the client tables of the build given by `--build`;
 `--offline` rebuilds from the cache alone. The quest row layout and flags are shared between
 `tools/build_data.py` and `Core/Constants.lua`, which change together. `ChroniquesAzeroth/Assets/`
-holds the TGA artwork, rebuilt by `tools/import_zone_art.py`.
+holds the TGA artwork, rebuilt by `tools/import_zone_art.py`; an artwork added since the original
+manifest is listed in `tools/zone_art.csv` with its source and the band of the image that shows
+its subject.
 
 ## Checks
 

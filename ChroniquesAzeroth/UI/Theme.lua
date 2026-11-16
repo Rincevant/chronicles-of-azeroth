@@ -111,6 +111,10 @@ for areaID, file in pairs({
     [361] = "felwood", [400] = "thousandneedles", [405] = "desolace", [406] = "stonetalon", [440] = "tanaris",
     [490] = "ungoro", [493] = "moonglade", [618] = "winterspring", [1377] = "silithus", [1637] = "orgrimmar",
     [1638] = "thunderbluff", [1657] = "darnassus",
+    -- Built by tools/import_zone_art.py --crops from tools/zone_art.csv.
+    [16591] = "riverglades", [16593] = "zephrasisle", [16651] = "shendralas", [616] = "mounthyjal",
+    [16606] = "darkspearislands", [2257] = "deepruntram", [2597] = "alteracvalley",
+    [3277] = "warsonggulch", [3358] = "arathibasin", [25] = "blackrock-mountain",
 }) do
     Theme.zoneArt[areaID] = ASSET_PATH .. "zone-" .. file .. ".tga"
 end

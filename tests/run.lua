@@ -147,10 +147,15 @@ local artOf = function(group)
 end
 local warrior = artOf(findGroup("categories", 81))
 check(warrior and warrior.kind == "file" and warrior.ratio == 1, "a class category shows its talent background")
-local blackrock = artOf(findGroup("ek", 25))
-check(blackrock.kind == "file", "Blackrock Mountain shows the loading screen of its instances")
-check(blackrock.top and blackrock.top > 0 and blackrock.bottom < 1,
+local framed = artOf(crafting)
+check(framed.kind == "file", "a category shows a loading screen")
+check(framed.top and framed.top > 0 and framed.bottom < 1,
     "a framed loading screen is cropped to its painting, without the logo band")
+local blackrock = artOf(findGroup("ek", 25))
+check(tostring(blackrock.fileID):find("zone-blackrock-mountain.tga", 1, true),
+    "Blackrock Mountain shows the artwork of its banner")
+local riverglades = artOf(findGroup("ek", 16591))
+check(tostring(riverglades.fileID):find("zone-riverglades.tga", 1, true), "a Forever zone shows its cropped artwork")
 local elwynnArt = artOf(findGroup("ek", 12))
 check(elwynnArt.kind == "file" and tostring(elwynnArt.fileID):find("zone-elwynn.tga", 1, true),
     "a zone Chronicles of Azeroth illustrates shows its own artwork")
