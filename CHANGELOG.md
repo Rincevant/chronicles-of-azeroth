@@ -5,6 +5,7 @@ the notes of its GitHub release.
 
 ## Unreleased
 
+- The window also opens from the addon compartment of the game.
 - Progress gauges: a bar under each tab, and a ring for the overall progress, the mean of the
   tabs.
 - **Collections** tab: mounts, pets, toys, appearance sets and titles, owned or missing, with

@@ -816,6 +816,20 @@ minimapButton:GetScript("OnClick")(minimapButton, "RightButton")
 check(ns.Database:Settings().tracking == trackingBefore, "a second right click switches it back")
 SlashCmdList.CHRONIQUESAZEROTH("")
 
+-- The addon compartment, declared in the TOC, opens and closes the window.
+local compartment = {}
+for line in io.lines(ADDON .. "/" .. ADDON .. ".toc") do
+    local field, value = (line:gsub("\r", "")):match("^## (AddonCompartmentFunc%a*): (%S+)")
+    if field then compartment[field] = value end
+end
+check(compartment.AddonCompartmentFunc and _G[compartment.AddonCompartmentFunc]
+    and _G[compartment.AddonCompartmentFuncOnEnter] and _G[compartment.AddonCompartmentFuncOnLeave],
+    "the TOC declares the addon compartment functions the addon defines")
+local wasShown = frame:IsShown()
+_G[compartment.AddonCompartmentFunc]()
+check(frame:IsShown() ~= wasShown, "the addon compartment toggles the window")
+_G[compartment.AddonCompartmentFunc]()
+
 -- The saved variables of a version before 0.26 become the records of their characters.
 do
     local current, currentCharacter = ChroniquesAzerothDB, ChroniquesAzerothCharacterDB

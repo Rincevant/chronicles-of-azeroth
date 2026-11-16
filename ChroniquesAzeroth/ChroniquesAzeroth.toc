@@ -8,6 +8,9 @@
 ## X-License: GPL-3.0-or-later
 ## SavedVariables: ChroniquesAzerothDB
 ## SavedVariablesPerCharacter: ChroniquesAzerothCharacterDB
+## AddonCompartmentFunc: ChroniquesAzeroth_OnAddonCompartmentClick
+## AddonCompartmentFuncOnEnter: ChroniquesAzeroth_OnAddonCompartmentEnter
+## AddonCompartmentFuncOnLeave: ChroniquesAzeroth_OnAddonCompartmentLeave
 ## IconTexture: Interface\AddOns\ChroniquesAzeroth\Assets\heritage-medallion
 
 Core\Init.lua

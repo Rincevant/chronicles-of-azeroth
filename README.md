@@ -50,7 +50,7 @@
 1. Download a [release archive](https://github.com/Rincevant/chronicles-of-azeroth/releases).
 2. Extract the `ChroniquesAzeroth` folder into the World of Warcraft `Interface/AddOns` directory.
 3. Enable **Chronicles of Azeroth** from the character-selection AddOns menu.
-4. Type `/chroniques` in game, or use the minimap button.
+4. Type `/chroniques` in game, or use the minimap button or the addon compartment.
 
 | Command | Effect |
 | --- | --- |
