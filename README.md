@@ -55,7 +55,7 @@ The quest catalogue was checked against QuestieDB Forever,
 
 ## Repository layout
 
-- `ChroniquesAzeroth/` — addon source files.
+- `ChroniquesAzeroth/` — addon source files: `Core.lua` (addon frame and localized texts), `Zones.lua`, `Quests.lua` and `Professions.lua` (data and tracking), `UI/` (the window, one file per tab and the shared widgets), `Events.lua` (slash commands and game events), and the generated catalogues.
 - `tools/` — development scripts used to generate catalogues and to check the version. These are not needed at runtime.
 - `tests/` — offline tests, run on top of an emulation of the WoW API.
 - `.github/workflows/` — continuous integration and release publication.
@@ -87,7 +87,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the conventions of the repository.
 A release is published by pushing a tag named after the version of the TOC:
 
 1. Set the new version in `ChroniquesAzeroth/ChroniquesAzeroth.toc` (`## Version:`) and in
-   `CA.VERSION` at the top of `ChroniquesAzeroth/ChroniquesAzeroth.lua`.
+   `CA.VERSION` at the top of `ChroniquesAzeroth/Core.lua`.
 2. Add its section to [CHANGELOG.md](CHANGELOG.md), headed `## <version>`.
 3. Commit, then tag and push: `git tag v0.26.0-beta && git push origin v0.26.0-beta`.
 

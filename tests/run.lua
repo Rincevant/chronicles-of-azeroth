@@ -53,10 +53,12 @@ local function startSession(accountDB, characterDB, setup)
     if setup then setup(Stub) end
     ChroniquesAzerothDB, ChroniquesAzerothCharacterDB = accountDB, characterDB
     local files = tocFiles()
+    -- The client passes every file of the addon the same private table.
+    local namespace = {}
     for _, file in ipairs(files) do
         local chunk, err = loadfile(ADDON .. "/" .. file)
         if not chunk then error("cannot load " .. file .. ": " .. err) end
-        chunk(ADDON, {})
+        chunk(ADDON, namespace)
     end
     Stub.Fire("PLAYER_LOGIN")
     -- Lets the login scan of completed quests and the delayed spellbook scan finish.
@@ -98,7 +100,7 @@ end
 -------------------------------------------------------------------------------
 
 local fileCount = startSession(nil, nil)
-check(fileCount == 3, "the TOC lists %d files, 3 expected", fileCount)
+check(fileCount == 13, "the TOC lists %d files, 13 expected", fileCount)
 check(type(ChroniquesAzerothQuestCatalog) == "table", "the quest catalogue is loaded")
 check(type(ChroniquesAzerothProfessionCatalog) == "table", "the profession catalogue is loaded")
 
@@ -145,6 +147,41 @@ tabs.professions:Click()
 Stub.Fire("SKILL_LINES_CHANGED")
 Stub.Advance(5)
 check(hasText(window, "Blacksmithing") or hasText(window, "Forge"), "the professions tab lists Blacksmithing")
+
+-- Every browsing tab uses the three columns of the Quests tab, at the same place.
+local function columnLayout(columns)
+    local layout = {}
+    for _, column in ipairs(columns) do table.insert(layout, column._width .. "x" .. column._height) end
+    return table.concat(layout, " ")
+end
+local function browsingColumns(root)
+    local columns = {}
+    for _, child in ipairs(root._children) do
+        if child._type == "Frame" and child._height == 400 and child._width ~= 1050 then table.insert(columns, child) end
+    end
+    return columns
+end
+local questColumns = browsingColumns(window)
+local professionView
+for _, child in ipairs(window._children) do
+    if child._width == 1050 and #browsingColumns(child) == 3 then professionView = child end
+end
+check(columnLayout(questColumns) == "245x400 405x400 380x400", "the Quests tab has its three columns (%s)", columnLayout(questColumns))
+check(professionView ~= nil and columnLayout(browsingColumns(professionView)) == columnLayout(questColumns),
+    "the Professions tab has the columns of the Quests tab")
+
+-- Professions tab: the recipes are listed on the right; selecting one shows its details in
+-- the middle, with the progress of the profession.
+local recipeRows = {}
+for _, widget in ipairs(Stub.Descendants(professionView)) do
+    if widget._type == "Button" and widget.recipe and widget:IsShown() then table.insert(recipeRows, widget) end
+end
+check(#recipeRows > 0, "the recipe list shows recipes")
+if recipeRows[2] then
+    recipeRows[2]:Click()
+    check(hasText(professionView, "^" .. recipeRows[2].recipe.name:gsub("%p", "%%%0") .. "$"), "the selected recipe is detailed")
+end
+check(hasText(professionView, "^%d+%%$"), "the profession shows its progress ring")
 
 -- Feedback tab: the report is prepared without any network access.
 tabs.feedback:Click()

@@ -3,6 +3,14 @@
 The versions of Chronicles of Azeroth, newest first. The section of a version is used as
 the notes of its GitHub release.
 
+## Unreleased
+
+- The **Professions** tab uses the layout of the **Quests** tab: the professions on the
+  left; in the middle, the selected profession with a progress ring of its learned recipes,
+  then the details of the selected recipe; on the right, the recipes of the profession.
+- The code is split into modules: core, zones, quests, professions, one file per tab and
+  shared widgets.
+
 ## 0.25.1-beta — 2026-10-06
 
 - The **Feedback** tab offers a Discord link besides the GitHub issues, and the README

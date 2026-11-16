@@ -26,7 +26,18 @@ including the language of the repository.
 ## Files
 
 - `ChroniquesAzeroth/ChroniquesAzeroth.toc` lists the files in load order and carries the
-  version, which must equal `CA.VERSION` in `ChroniquesAzeroth.lua`.
+  version, which must equal `CA.VERSION` in `Core.lua`.
+- The files share the addon frame `CA` and the private table the client passes to every
+  file (`local _, ns = ...`). Each file reaches what another one provides through `ns`, and
+  since the TOC order is the load order, a file only uses at load time what an earlier file
+  has set.
+- `Core.lua` creates `CA` and holds the localized texts; `Zones.lua`, `Quests.lua` and
+  `Professions.lua` hold the data and the tracking logic; `UI/` holds the window, one file
+  per tab and the shared widgets; `Events.lua` wires the slash commands and the game events.
+- Every tab that browses groups of items lays them out in the three columns of
+  `ns.columns` (`UI/Widgets.lua`): the groups on the left, the selected group and item in
+  the middle, the items of the group on the right. A new tab builds on these columns and
+  on the other shared widgets, so that every tab looks and behaves alike.
 - `ChroniquesAzeroth/QuestCatalog.lua` and `ChroniquesAzeroth/ProfessionCatalog.lua` are
   generated: they change only by running their generator in `tools/`, never by hand.
 - `ChroniquesAzeroth/Assets/` holds the TGA artwork, rebuilt by `tools/import_zone_art.py`.

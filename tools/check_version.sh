@@ -9,7 +9,7 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
 toc="$repo_dir/ChroniquesAzeroth/ChroniquesAzeroth.toc"
-code="$repo_dir/ChroniquesAzeroth/ChroniquesAzeroth.lua"
+code="$repo_dir/ChroniquesAzeroth/Core.lua"
 
 toc_version="$(sed -n 's/^## Version:[[:space:]]*\([^[:space:]]*\).*/\1/p' "$toc" | tr -d '\r')"
 code_version="$(sed -n 's/^CA\.VERSION = "\([^"]*\)".*/\1/p' "$code")"
