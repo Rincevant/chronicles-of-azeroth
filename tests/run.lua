@@ -172,9 +172,13 @@ check(tostring(steppes.fileID):find("zone-blackrock-mountain.tga", 1, true), "th
 local noArt = { kind = "zone", id = 99999, continent = ns.Const.Continent.EASTERN_KINGDOMS, chains = {} }
 check(artOf(noArt) == nil, "a zone without an artwork of the addon stays plain")
 -- Every group of the quests and professions tabs has its artwork, and every artwork its file.
+-- (Read from the tables rather than by showing every group, which would queue the titles of
+-- every quest.)
 for _, list in pairs(ns.Quests:Groups()) do
     for _, group in ipairs(list) do
-        check(artOf(group), "the %s %d has an artwork", group.kind, group.id)
+        local art = group.kind == "zone" and ns.Theme.zoneArt[group.id]
+            or ns.Theme.categoryArt[group.id] or (group.skill and ns.Theme.professionArt[group.skill])
+        check(art, "the %s %d has an artwork", group.kind, group.id)
     end
 end
 for _, art in ipairs({ ns.Theme.zoneArt, ns.Theme.bannerArt, ns.Theme.categoryArt, ns.Theme.professionArt }) do
