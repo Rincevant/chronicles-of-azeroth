@@ -8,3 +8,12 @@ QuestieDB-source/
 .DS_Store
 Thumbs.db
 *.code-workspace
+
+# Packaging output of the release workflow
+build/
+
+# Downloads of the data generator
+.cache/
+
+# Python bytecode of the tools
+__pycache__/

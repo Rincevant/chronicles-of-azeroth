@@ -1,0 +1,77 @@
+# Publishes a GitHub release when a version tag is pushed. The tag must name the version of
+# the TOC ("v0.25.1-beta" for "## Version: 0.25.1-beta"). The tests run first; the release
+# notes are the section of CHANGELOG.md for this version, and the addon zip, ready to extract
+# into Interface/AddOns, is attached.
+#
+#     git tag v0.25.1-beta
+#     git push origin v0.25.1-beta
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+env:
+  ADDON: ChroniquesAzeroth
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check that the tag matches the version
+        id: version
+        run: |
+          version="$(bash tools/check_version.sh "$GITHUB_REF_NAME")"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Install Lua 5.1
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+
+      - name: Run the tests
+        run: |
+          CA_TEST_LOCALE=enUS lua5.1 tests/run.lua
+          CA_TEST_LOCALE=frFR lua5.1 tests/run.lua
+
+      - name: Package the addon
+        id: package
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          zip="$ADDON-v$VERSION.zip"
+          mkdir -p build
+          cp -r "$ADDON" "build/$ADDON"
+          cp LICENSE "build/$ADDON/"
+          (cd build && zip -qr "$zip" "$ADDON")
+          echo "zip=build/$zip" >> "$GITHUB_OUTPUT"
+
+      - name: Write the release notes
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          # The section of CHANGELOG.md that starts with "## <version>", up to the next one.
+          awk -v version="$VERSION" '
+            /^## / { inside = ($2 == version) ; next }
+            inside { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then echo "Chronicles of Azeroth $VERSION" > notes.md; fi
+          cat notes.md
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          ZIP: ${{ steps.package.outputs.zip }}
+        run: |
+          prerelease=""
+          case "$VERSION" in *-*) prerelease="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" "$ZIP" \
+            --title "Chronicles of Azeroth $VERSION" \
+            --notes-file notes.md \
+            $prerelease
