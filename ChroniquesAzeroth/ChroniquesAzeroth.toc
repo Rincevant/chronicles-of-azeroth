@@ -4,7 +4,7 @@
 ## Notes: Standalone collection tracking for quests and professions.
 ## Notes-frFR: Suivi autonome de collection des quêtes et métiers.
 ## Author: Peron
-## Version: 0.25.1-beta
+## Version: 0.26.0-beta
 ## X-License: GPL-3.0-or-later
 ## SavedVariables: ChroniquesAzerothDB
 ## SavedVariablesPerCharacter: ChroniquesAzerothCharacterDB

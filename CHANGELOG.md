@@ -3,43 +3,70 @@
 The versions of Chronicles of Azeroth, newest first. The section of a version is used as
 the notes of its GitHub release.
 
-## Unreleased
+## 0.26.0-beta — Completionist
 
-- The window also opens from the addon compartment of the game.
-- Progress gauges: a bar under each tab, and a ring for the overall progress, the mean of the
-  tabs.
-- **Collections** tab: mounts, pets, toys, appearance sets and titles, owned or missing, with
-  the source of each item.
-- **Legacy challenges** tab, read from the game, with their criteria and rewards; within reach,
-  the categories of another class or of an unlearned profession are left out.
-- **Dungeons** and **Raids** tabs: the bosses of each instance, defeated or not, and its quests,
-  which a link from a recipe or a quest opens on their instance.
-- Quests and professions come from data generated from the client tables of the Forever
-  build, QuestieDB and Wowhead: 5,724 quests across the zones of both continents and the quest
-  categories, and the complete recipe catalogue of every profession, with reagents and
-  sources (trainer, vendor, drop, quest).
+### Quests
+
+- 5,724 quests across the zones of both continents, the other zones and the quest categories
+  (classes, professions, events), instead of 2,307 quests in 46 zones. The zones Chronicles of
+  Azeroth illustrates keep their artwork; the others show their map or a loading screen.
 - Quest details tell the giver and the turn-in NPC, with a map waypoint, the experience and
-  the reputation; a quest out of reach is shown locked, with the reason (level, prerequisite,
-  profession rank).
-- Quests can be ignored, which takes them out of the counts; repeatable quests are remembered
-  once turned in and never count.
-- Every list has the same search and the same filter (all, to do, done); quests and recipes
-  link to each other, and a Back link returns to where a link was followed.
-- A faction selector shows the quests of the other faction, and the character view keeps only
-  what the character can do, unless the switch shows everything.
-- The window can be moved, resized and scaled (`/ca scale`); the minimap button can be hidden
-  (`/ca minimap`). The zones Chronicles of Azeroth illustrates keep their artwork; the others
-  show their map or a loading screen.
-- The saved variables of the previous versions are converted at the first login: each
-  character keeps the quests and recipes it had recorded.
+  the reputation. A quest out of reach is shown locked, with the reason: level, prerequisite
+  or profession rank.
+- A quest that cannot or need not be done can be ignored, which takes it out of the counts.
+  Repeatable quests (repeatable, daily, weekly) never count: one turned in is remembered, and
+  one done before can be marked done.
+
+### Professions
+
+- The complete recipe catalogue of every profession of the Forever client, with the reagents
+  and how to obtain each recipe: trainer, vendor, drop or quest.
+
+### New tabs
+
+- **Dungeons** and **Raids**: the bosses of each instance, defeated or not, and its quests.
+- **Legacy challenges**, read from the game, with their criteria and rewards.
+- **Collections**: mounts, pets, toys, appearance sets and titles, owned or missing, with the
+  source of each item.
+
+### Every tab
+
+- Every tab uses the layout of the **Quests** tab: the groups on the left, the selected group
+  and item in the middle, the items of the group on the right, with the same search and the
+  same filter (all, to do, done) on every list.
+- Quests, recipes and instances link to each other; a Back link returns, step by step, to
+  where a link was followed.
+- A faction selector shows the quests of the other faction. In its own faction, the character
+  view keeps only what the character can do (race, class, learned professions), unless the
+  switch shows everything.
+- Progress gauges: a bar under each tab, and a ring for the overall progress, the mean of the
+  tabs, so that each tab weighs the same.
+
+### Window and commands
+
+- The window can be moved, resized and scaled (`/ca scale`); its place and size are kept. It
+  also opens from the addon compartment of the game, and the minimap button can be hidden
+  (`/ca minimap`).
 - A log is kept in the saved variables: the APIs the client provides, the quests turned in
   and any error of the addon, which no longer interrupts the game. `/ca help`, `/ca log`,
-  `/ca debug` and `/ca clearlog` complete `/ca diag`.
-- The **Professions** tab uses the layout of the **Quests** tab: the professions on the
-  left; in the middle, the selected profession with a progress ring of its learned recipes,
-  then the details of the selected recipe; on the right, the recipes of the profession.
-- The code is split into modules: core, zones, quests, professions, one file per tab and
-  shared widgets.
+  `/ca debug`, `/ca rescan`, `/ca reset` and `/ca clearlog` complete `/ca diag`.
+- The feedback report adds the last lines of the log.
+- The saved variables of the previous versions are converted at the first login: each
+  character keeps the quests and recipes it had recorded, and the tracking mode and the place
+  of the minimap button carry over. A new installation starts in the character view.
+
+### For contributors
+
+- The project is licensed under GPL-3.0-or-later, as the QuestieDB data it embeds requires.
+- Code, comments and documentation are in English; `CONTRIBUTING.md` sets the conventions,
+  and `AGENTS.md` (imported by `CLAUDE.md`) guides AI-assisted development.
+- The data is generated by `tools/build_data.py` from the client tables of the Forever build
+  (wago.tools), QuestieDB and Wowhead, with a download cache and an offline mode.
+- The addon is split into services (`Core/`), localization (`Locales/`), generated data
+  (`Data/`), progress logic (`Modules/`) and interface (`UI/`, one view per tab).
+- Offline tests run the addon on an emulation of the WoW API, with an English and a French
+  client; GitHub Actions runs them on every push and pull request, and publishes a release
+  when a version tag is pushed.
 
 ## 0.25.1-beta — 2026-10-06
 
