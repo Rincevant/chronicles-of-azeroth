@@ -2,6 +2,18 @@
 
 **Chronicles of Azeroth** is a standalone World of Warcraft Forever addon for tracking quest and profession completion, without requiring Questie, All The Things, or any other addon.
 
+<p align="center">
+  <a href="docs/images/quests.jpg"><img src="docs/images/quests.jpg" width="24%" alt="The quests of Westfall, with the Westfall Stew chain unfolded and its last quest selected"></a>
+  <a href="docs/images/professions.jpg"><img src="docs/images/professions.jpg" width="24%" alt="The cooking recipes, with Westfall Stew selected: its reagents and the vendor and quest that teach it"></a>
+  <a href="docs/images/recipes.jpg"><img src="docs/images/recipes.jpg" width="24%" alt="The blacksmithing recipes, with Runed Copper Breastplate selected and the game tooltip of a recipe"></a>
+  <a href="docs/images/dungeons.jpg"><img src="docs/images/dungeons.jpg" width="24%" alt="The bosses and quests of the Hall of Thanes, with a quest selected"></a>
+</p>
+<p align="center">
+  <a href="docs/images/raids.jpg"><img src="docs/images/raids.jpg" width="32%" alt="The bosses and quests of Zul'Gurub"></a>
+  <a href="docs/images/challenges.jpg"><img src="docs/images/challenges.jpg" width="32%" alt="The Legacy challenges of the Eastern Kingdoms, with Explore Westfall selected and its criteria"></a>
+  <a href="docs/images/collections.jpg"><img src="docs/images/collections.jpg" width="32%" alt="The mounts, with Brown Kodo selected"></a>
+</p>
+
 ## Features
 
 - **Quests**: zones grouped by continent, with their completion; quests grouped into chains
@@ -89,6 +101,7 @@ of the minimap button carry over.
 - `tools/` — the data generator, the artwork importer and the version check. They are not
   needed at runtime.
 - `tests/` — offline tests, run on top of an emulation of the WoW API.
+- `docs/images/` — the screenshots of this README.
 - `.github/workflows/` — continuous integration and release publication.
 
 ## Development
