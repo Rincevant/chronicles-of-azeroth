@@ -17,6 +17,8 @@
   quest opens in its tab, on its instance.
 - **Legacy challenges**, read from the game; within reach, the categories of another class
   or of a profession the character has not learned are left out.
+- **Collections** (mounts, pets, toys, appearance sets, titles): what is owned and what is
+  missing, with the source of each item.
 - **Account or character tracking**: the account view merges the progress of every character
   that logged in with the addon enabled; a faction selector shows the other faction's quests.
 - **Within reach**: the character view keeps only what the character can do (its race, its

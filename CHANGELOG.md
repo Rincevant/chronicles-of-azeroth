@@ -5,6 +5,8 @@ the notes of its GitHub release.
 
 ## Unreleased
 
+- **Collections** tab: mounts, pets, toys, appearance sets and titles, owned or missing, with
+  the source of each item.
 - **Legacy challenges** tab, read from the game, with their criteria and rewards; within reach,
   the categories of another class or of an unlearned profession are left out.
 - **Dungeons** and **Raids** tabs: the bosses of each instance, defeated or not, and its quests,

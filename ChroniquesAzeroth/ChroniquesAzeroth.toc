@@ -38,6 +38,7 @@ Modules\Quests.lua
 Modules\Professions.lua
 Modules\Instances.lua
 Modules\Achievements.lua
+Modules\Collections.lua
 
 UI\Theme.lua
 UI\Widgets.lua
@@ -48,6 +49,7 @@ UI\Views\QuestsView.lua
 UI\Views\ProfessionsView.lua
 UI\Views\InstancesView.lua
 UI\Views\AchievementsView.lua
+UI\Views\CollectionsView.lua
 UI\Views\FeedbackView.lua
 UI\MinimapButton.lua
 
