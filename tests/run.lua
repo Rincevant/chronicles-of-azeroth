@@ -841,6 +841,13 @@ check(report:find(ns.Compat.GetAddOnVersion(), 1, true) and report:find(ns.Playe
     and report:find("quests", 1, true) and report:find("github.com/Rincevant/chronicles-of-azeroth", 1, true),
     "the report tells the version, the character, the tab shown before and where to send it")
 check(ns.Database:Character().feedbackDraft == report, "the report is kept for the character")
+-- A report taller than its box scrolls, and the cursor going down brings its line into view.
+local reportScroll = feedbackView.scroll
+reportScroll._scrollRange = 3000
+reportScroll:GetScript("OnScrollRangeChanged")(reportScroll)
+check(reportScroll.bar:IsShown(), "a report taller than its box shows a scroll bar")
+feedbackView.edit:GetScript("OnCursorChanged")(feedbackView.edit, 0, -2500, 1, 14)
+check(reportScroll:GetVerticalScroll() > 0, "the box scrolls to keep the cursor in view")
 
 -- A right click on the minimap button switches the tracking mode.
 local minimapButton = ChroniquesAzerothMinimapButton

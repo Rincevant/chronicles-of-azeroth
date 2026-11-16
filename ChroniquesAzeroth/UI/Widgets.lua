@@ -764,6 +764,56 @@ end
 -- Detail panel: a scrolling column of headings, lines, icons and buttons
 -------------------------------------------------------------------------------
 
+-- Multi-line text box that scrolls when its text outgrows it, with the scroll bar of the
+-- lists; the cursor stays in view while typing. Returns the scroll frame and the edit box.
+function UI.ScrollingEditBox(parent, size)
+    local scroll = CreateFrame("ScrollFrame", nil, parent)
+    local edit = CreateFrame("EditBox", nil, scroll)
+    edit:SetMultiLine(true)
+    edit:SetAutoFocus(false)
+    Theme.SetFont(edit, size or 12)
+    edit:SetTextColor(Theme.Unpack(C.text))
+    edit:SetWidth(50)
+    scroll:SetScrollChild(edit)
+
+    local bar = ScrollBar(scroll, function(value) scroll:SetVerticalScroll(value) end)
+    bar:SetPoint("TOPRIGHT", scroll, "TOPRIGHT", 0, 0)
+    bar:SetPoint("BOTTOMRIGHT", scroll, "BOTTOMRIGHT", 0, 0)
+    local function sync()
+        local range = math.max(0, scroll:GetVerticalScrollRange() or 0)
+        bar:Sync(scroll:GetVerticalScroll(), range)
+        bar:SetShown(range > 0)
+    end
+    local function scrollTo(value)
+        local range = math.max(0, scroll:GetVerticalScrollRange() or 0)
+        scroll:SetVerticalScroll(math.max(0, math.min(range, value)))
+        sync()
+    end
+
+    scroll:SetScript("OnSizeChanged", function(_, width)
+        edit:SetWidth(math.max(50, (width or 0) - 16))
+        sync()
+    end)
+    scroll:SetScript("OnScrollRangeChanged", sync)
+    scroll:EnableMouseWheel(true)
+    scroll:SetScript("OnMouseWheel", function(_, delta) scrollTo(scroll:GetVerticalScroll() - delta * 30) end)
+    -- A click below the last line still gives the focus to the text.
+    scroll:EnableMouse(true)
+    scroll:SetScript("OnMouseDown", function() edit:SetFocus() end)
+    edit:SetScript("OnCursorChanged", function(_, _, y, _, height)
+        local top, visible = scroll:GetVerticalScroll(), scroll:GetHeight() or 0
+        y = -(y or 0)
+        if y < top then
+            scrollTo(y)
+        elseif y + (height or 0) > top + visible then
+            scrollTo(y + (height or 0) - visible)
+        end
+    end)
+    edit:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
+    scroll.edit, scroll.bar = edit, bar
+    return scroll, edit
+end
+
 function UI.DetailPanel(parent)
     local scroll = CreateFrame("ScrollFrame", nil, parent)
     local child = CreateFrame("Frame", nil, scroll)

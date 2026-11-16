@@ -93,6 +93,7 @@ end
 function Widget:GetValue() return self._value or 0 end
 function Widget:SetVerticalScroll(value) self._scroll = value end
 function Widget:GetVerticalScroll() return self._scroll or 0 end
+function Widget:GetVerticalScrollRange() return self._scrollRange or 0 end
 function Widget:RegisterEvent(event)
     if not Stub.knownEvents[event] then error("unknown event " .. event) end
     eventFrames[self] = eventFrames[self] or {}
