@@ -1,8 +1,9 @@
-"""Convertit le manifeste d'illustrations de zones en textures TGA pour WoW.
+"""Converts the zone artwork manifest into TGA textures for WoW.
 
-Le script est volontairement déterministe : l'ordre des 47 entrées du CSV est
-vérifié, chaque image est redressée selon son orientation EXIF puis recadrée au
-format panoramique unique utilisé par les cartes et bannières de l'addon.
+The script is deliberately deterministic: the order of the 47 entries of the CSV
+is checked, and each image is straightened according to its EXIF orientation,
+then cropped to the single panoramic format used by the cards and banners of
+the addon.
 """
 
 from __future__ import annotations

@@ -5,23 +5,23 @@ CA:RegisterEvent("QUEST_TURNED_IN")
 CA:RegisterEvent("QUEST_ACCEPTED")
 CA:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 CA:RegisterEvent("GET_ITEM_INFO_RECEIVED")
--- La lecture des recettes se déclenche uniquement à partir des signaux du
--- métier natif : aucune exploration de données de profession au chargement.
+-- Recipes are read only on the signals of the native profession window:
+-- no profession data is explored at load time.
 CA:RegisterEvent("TRADE_SKILL_SHOW")
--- Ils arrivent quand la liste native devient réellement prête et lors de
--- l'apprentissage d'une recette, même si Chroniques est fermé.
+-- They arrive when the native list is really ready and when a recipe is
+-- learned, even while Chronicles is closed.
 CA:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
 CA:RegisterEvent("NEW_RECIPE_LEARNED")
 CA:RegisterEvent("SKILL_LINES_CHANGED")
--- Les variantes historiques ne sont pas présentes sur tous les clients.
+-- The historical variants do not exist on every client.
 pcall(CA.RegisterEvent, CA, "CRAFT_SHOW")
 pcall(CA.RegisterEvent, CA, "CRAFT_UPDATE")
 pcall(CA.RegisterEvent, CA, "CRAFT_CLOSE")
 pcall(CA.RegisterEvent, CA, "LEARNED_SPELL_IN_TAB")
 CA:RegisterEvent("TRADE_SKILL_CLOSE")
 
--- Chroniques suit la langue du client : le français reste la langue par
--- défaut des clients frFR, tous les autres clients reçoivent l'anglais.
+-- Chronicles follows the client language: French stays the language of frFR
+-- clients, every other client gets English.
 CA.locale = (GetLocale and GetLocale() == "frFR") and "frFR" or "enUS"
 CA.VERSION = "0.25.1-beta"
 CA.GITHUB_ISSUES_URL = "https://github.com/Rincevant/chronicles-of-azeroth/issues"
@@ -100,20 +100,20 @@ function CA:GetZoneQuestTitle(zone)
   return prefix .. string.upper(self:GetZoneName(zone))
 end
 
--- Catalogue de zones Alliance Classic. Les IDs restent centralisés ici afin
--- d'être vérifiables et d'être étendus sans modifier l'interface.
+-- Classic Alliance zone catalogue. IDs stay centralized here so that they
+-- can be checked and extended without changing the interface.
 CA.zones = {
   {
     key = "elwynn", name = "Forêt d’Elwynn", continent = "Royaumes de l’Est",
     faction = "Alliance", minLevel = 1, maxLevel = 12, questTitle = "QUÊTES D’ELWYNN", mapTitle = "FORÊT D’ELWYNN",
     cardArt = "zone-elwynn.tga", heroArt = "zone-elwynn.tga",
-    -- Ancien catalogue de démarrage ; remplacé au chargement par le catalogue Forever complet.
-    -- Les IDs viennent du client Forever référencé par cette base ; les titres
-    -- restent lus dans le client afin de respecter la langue du joueur.
+    -- Former starter catalogue; replaced at load time by the full Forever catalogue.
+    -- IDs come from the Forever client this database refers to; titles are
+    -- still read from the client so that they follow the player's language.
     quests = {
       { id = 783 }, { id = 16 },
-      -- Cette introduction peut être contournée : Eagan propose directement
-      -- « Des loups de l’autre côté ». Elle est affichée, mais pas requise.
+      -- This introduction can be skipped: Eagan directly offers
+      -- "Wolves Across the Border". It is listed, but not required.
       { id = 5261, optional = true, reason = "Introduction facultative" },
       { id = 7 }, { id = 33 }, { id = 15 }, { id = 18 }, { id = 3905 },
       { id = 3903 }, { id = 3904 }, { id = 6 }, { id = 54 }, { id = 2158 },
@@ -131,8 +131,8 @@ CA.zones = {
     key = "dunmorogh", name = "Dun Morogh", continent = "Royaumes de l’Est",
     faction = "Alliance", minLevel = 1, maxLevel = 12, questTitle = "QUÊTES DE DUN MOROGH", mapTitle = "DUN MOROGH",
     cardArt = "zone-dunmorogh.tga", heroArt = "zone-dunmorogh.tga",
-    -- Ancien catalogue 1–12. Les échanges de monture, la quête
-    -- « Bienvenue ! » absente de Forever et Gnomeregan sont volontairement exclus.
+    -- Former 1-12 catalogue. Mount exchanges, the "Welcome!" quest that
+    -- Forever lacks and Gnomeregan are deliberately left out.
     quests = {
       { id = 179 }, { id = 403 }, { id = 170 }, { id = 183 }, { id = 233 },
       { id = 3361 }, { id = 182 }, { id = 234 }, { id = 218 }, { id = 282 },
@@ -148,8 +148,8 @@ CA.zones = {
     key = "westfall", name = "Marche de l’Ouest", continent = "Royaumes de l’Est",
     faction = "Alliance", minLevel = 9, maxLevel = 20, questTitle = "QUÊTES DE MARCHE DE L’OUEST", mapTitle = "MARCHE DE L’OUEST",
     cardArt = "zone-westfall.tga", heroArt = "zone-westfall.tga",
-    -- Ancien catalogue 9–20 ; les quêtes « Sweet Amber » niveau 44
-    -- appartiennent à une autre tranche de progression.
+    -- Former 9-20 catalogue; the level 44 "Sweet Amber" quests
+    -- belong to another progression range.
     quests = {
       { id = 184 }, { id = 36 }, { id = 6181 }, { id = 6261 }, { id = 6281 },
       { id = 6285 }, { id = 12 }, { id = 22 }, { id = 64 }, { id = 38 },
@@ -178,8 +178,8 @@ CA.zones = {
     key = "teldrassil", name = "Teldrassil", continent = "Kalimdor",
     faction = "Alliance", minLevel = 1, maxLevel = 12, questTitle = "QUÊTES DE TELDRASSIL", mapTitle = "TELDRASSIL",
     cardArt = "zone-teldrassil.tga", heroArt = "zone-teldrassil.tga",
-    -- Ancien parcours de départ kaldorei 1–12. L'introduction
-    -- « Welcome! » ne fait pas partie du catalogue Forever retenu.
+    -- Former 1-12 night elf starting path. The "Welcome!"
+    -- introduction is not part of the retained Forever catalogue.
     quests = {
       { id = 458 }, { id = 456 }, { id = 457 }, { id = 459 }, { id = 916 },
       { id = 3519 }, { id = 3521 }, { id = 3522 }, { id = 4495 }, { id = 488 },
@@ -197,8 +197,8 @@ CA.zones = {
     key = "darkshore", name = "Sombrivage", continent = "Kalimdor",
     faction = "Alliance", minLevel = 10, maxLevel = 22, questTitle = "QUÊTES DE SOMBRIVAGE", mapTitle = "SOMBRIVAGE",
     cardArt = "zone-darkshore.tga", heroArt = "zone-darkshore.tga",
-    -- Darkshore est affiché sous son nom français : Sombrivage. Les deux
-    -- quêtes « Onu is meditating » sans progression Classic sont exclues.
+    -- Darkshore is shown under its French name, Sombrivage. The two
+    -- "Onu is meditating" quests, which have no Classic progression, are left out.
     quests = {
       { id = 983 }, { id = 6341 }, { id = 6342 }, { id = 6343 }, { id = 953 },
       { id = 954 }, { id = 955 }, { id = 958 }, { id = 1001 }, { id = 956 },
@@ -217,8 +217,8 @@ CA.zones = {
   },
 }
 
--- Couverture géographique Classic. Les IDs restent disponibles pour les
--- illustrations et pour rattacher les sous-zones à leur grande zone.
+-- Classic geographic coverage. IDs stay available for the artwork
+-- and to attach subzones to their parent zone.
 local CLASSIC_ZONE_AREAS = {
   elwynn = { 12, 6170 },
   dunmorogh = { 1, 131, 133, 135, 146, 801, 6137, 6176, 6457 },
@@ -229,8 +229,8 @@ local CLASSIC_ZONE_AREAS = {
   badlands = { 3 }, blastedlands = { 4 }, swampofsorrows = { 8 }, duskwood = { 10 }, wetlands = { 11 },
   westernplaguelands = { 28 }, stranglethorn = { 33, 5287, 5339 }, alterac = { 36 }, deadwind = { 41 },
   redridge = { 44 }, arathi = { 45 }, burningsteppes = { 46 }, hinterlands = { 47 }, searinggorge = { 51 },
-  -- 154 est Deathknell : sans cette sous-zone, « Réveil brutal » (363),
-  -- première quête réprouvée, n'était jamais rattachée à Tirisfal.
+  -- 154 is Deathknell: without this subzone, "Rude Awakening" (363),
+  -- the first Forsaken quest, was never attached to Tirisfal.
   tirisfal = { 85, 154, 155, 6454 }, silverpine = { 130 }, easternplaguelands = { 139 }, hillsbrad = { 267 },
   stormwind = { 1519 }, ironforge = { 1537 }, undercity = { 1497 },
   durotar = { 14, 365, 6451, 6453 }, dustwallow = { 15 }, azshara = { 16 }, barrens = { 17, 392 },
@@ -292,8 +292,8 @@ for _, zone in ipairs(CA.zones) do
   zone.continentKey = zone.continent == "Kalimdor" and "kalimdor" or "east"
 end
 
--- Ancien ancrage de départ. Le catalogue embarqué le remplace ensuite par sa
--- liste complète, sans attendre une indexation externe.
+-- Former starting anchor. The embedded catalogue then replaces it with its
+-- complete list, without waiting for an external index.
 local STARTER_QUESTS_BY_ZONE = { tirisfal = { 363 } }
 for _, zone in ipairs(CA.zones) do
   for _, questID in ipairs(STARTER_QUESTS_BY_ZONE[zone.key] or {}) do
@@ -301,11 +301,11 @@ for _, zone in ipairs(CA.zones) do
   end
 end
 
--- Les 47 illustrations du manifeste sont converties en TGA dans Assets/.
--- Une seule illustration sert à la fois aux vignettes et à la bannière pour
--- limiter le nombre de textures chargées par l'interface. Mont Blackrock est
--- l'illustration de bannière des Steppes ardentes : c'est la zone voisine et
--- cela permet d'exposer la totalité du manifeste sans créer une fausse zone.
+-- The 47 artworks of the manifest are converted to TGA in Assets/.
+-- A single artwork serves both the cards and the banner, to limit the
+-- number of textures the interface loads. Blackrock Mountain is the
+-- banner artwork of the Burning Steppes: it is the neighbouring zone, and
+-- this shows the whole manifest without creating a fake zone.
 local ZONE_ART = {
   elwynn = "zone-elwynn.tga", westfall = "zone-westfall.tga", redridge = "zone-redridge.tga",
   duskwood = "zone-duskwood.tga", lochmodan = "zone-lochmodan.tga", dunmorogh = "zone-dunmorogh.tga",
@@ -334,12 +334,12 @@ for _, zone in ipairs(CA.zones) do
   end
 end
 
--- Les badges reviendront après stabilisation du suivi de zone.
+-- Badges will come back once zone tracking is stable.
 CA.badges = {}
 
--- Métadonnées de démarrage : niveau de quête,
--- niveau minimum et XP de référence Classic. L'XP est une estimation pour
--- une quête non active ; le client reste l'autorité pour la récompense réelle.
+-- Starter metadata: quest level,
+-- minimum level and Classic reference XP. The XP is an estimate for a
+-- quest that is not active; the client stays the authority on the actual reward.
 CA.questMeta = {
   [6]={5,2,335}, [7]={2,1,170}, [11]={10,6,840}, [15]={3,1,250}, [16]={1,1}, [18]={4,2,355}, [21]={5,1,450}, [33]={2,1,170},
   [35]={10,7,420}, [37]={10,7,210}, [39]={10,7,1050}, [40]={10,7,85}, [45]={10,7,420}, [46]={10,7,840}, [47]={7,4,630},
@@ -381,15 +381,15 @@ CA.questMeta = {
   [994]={22,10,1750},
 }
 
--- Liens de séries Classic de démarrage. Chaque quête peut
--- avoir plusieurs suites : elles sont affichées explicitement dans la fiche.
+-- Starter Classic chain links. A quest can have several
+-- follow-ups: they are listed explicitly in its details.
 CA.questLinks = {
   [783] = { next = { 7, 18, 5261 } }, [7] = { previous = { 783 }, next = { 15 } },
   [15] = { previous = { 7 }, next = { 21 } }, [21] = { previous = { 15 }, next = { 54 } },
   [18] = { previous = { 783 }, next = { 6 } }, [6] = { previous = { 18 } },
   [5261] = { previous = { 783 }, next = { 33 } }, [33] = { previous = { 5261 }, next = { 3903 } },
-  -- Milly est accessible après « Les loups derrière la frontière » (33),
-  -- puis sa série se poursuit dans cet ordre.
+  -- Milly is available after "Wolves Across the Border" (33),
+  -- then her chain goes on in this order.
   [3903] = { previous = { 33 }, next = { 3904 } }, [3904] = { previous = { 3903 }, next = { 3905 } }, [3905] = { previous = { 3904 } },
   [85] = { next = { 86 } }, [86] = { previous = { 85 }, next = { 84 } }, [84] = { previous = { 86 }, next = { 87 } }, [87] = { previous = { 84 } },
   [106] = { next = { 111 } }, [111] = { previous = { 106 }, next = { 107 } }, [107] = { previous = { 111 }, next = { 112 } }, [112] = { previous = { 107 }, next = { 114 } }, [114] = { previous = { 112 } },
@@ -401,9 +401,9 @@ CA.questLinks = {
 CA.questRewardIndex = {}
 CA.questTitleFallbacks = { [363] = CA.locale == "frFR" and "Réveil brutal" or "Rude Awakening" }
 
--- Catalogue entièrement embarqué, généré au build depuis les données Forever.
--- Cette initialisation ne lit aucune variable d'un autre addon : Chroniques
--- reste utilisable sans extension complémentaire.
+-- Fully embedded catalogue, generated at build time from the Forever data.
+-- This initialization reads no variable of another addon: Chronicles
+-- stays usable without any companion addon.
 function CA:LoadEmbeddedQuestCatalog()
   local catalog = ChroniquesAzerothQuestCatalog
   if type(catalog) ~= "table" or type(catalog.zones) ~= "table" or type(catalog.quests) ~= "table" then
@@ -468,7 +468,7 @@ end
 
 function CA:RebuildAccountCompleted()
   local merged = {}
-  -- Conserve les observations antérieures, sans les attribuer à un personnage.
+  -- Keeps the earlier observations, without attributing them to a character.
   for questID, savedAt in pairs(ChroniquesAzerothDB.legacyCompleted or {}) do merged[questID] = savedAt end
   for _, character in pairs(ChroniquesAzerothDB.characters or {}) do
     for questID, savedAt in pairs(character.completed or {}) do merged[questID] = savedAt end
@@ -489,9 +489,9 @@ function CA:SyncCurrentCharacter()
   ChroniquesAzerothDB.characters[key] = snapshot
   self:RebuildAccountCompleted()
 
-  -- Le catalogue couvre désormais plus de 2 500 quêtes. Les vérifications
-  -- historiques sont étalées pour que la connexion reste fluide, tout en
-  -- préservant l'import des validations antérieures à l'installation.
+  -- The catalogue now covers more than 2,300 quests. The historical checks
+  -- are spread over several frames so that the login stays smooth, while
+  -- still importing the quests completed before the install.
   if self.completionScanStarted then return end
   self.completionScanStarted = true
   local questIDs, seen = {}, {}
@@ -550,8 +550,8 @@ function CA:QuestName(questID)
   return self:L("questUnavailable")
 end
 
--- Les niveaux et l'XP de référence sont fournis par QuestCatalog.lua, chargé
--- avec l'addon. Aucun index externe n'est consulté pendant Refresh.
+-- Levels and reference XP come from QuestCatalog.lua, loaded with the
+-- addon. No external index is read during Refresh.
 function CA:GetQuestMeta(questID)
   return self.questMeta[questID]
 end
@@ -568,15 +568,15 @@ function CA:GetQuestDifficultyColor(questID)
 end
 
 function CA:GetXPDisplay(questID, classicXP)
-  -- Une quête active peut fournir la récompense exacte via le client.
-  -- Les quêtes non acceptées utilisent l'estimation Classic embarquée.
+  -- An active quest can provide its exact reward through the client.
+  -- Quests not accepted yet use the embedded Classic estimate.
   if GetQuestLogRewardXP then
-    -- Forever attend l'ID de quête, et non l'index de son journal.
+    -- Forever expects the quest ID, not the index in the quest log.
     local ok, xp = pcall(GetQuestLogRewardXP, questID)
     if ok and type(xp) == "number" and xp > 0 then return xp .. " XP" end
   end
-  -- La police de la bêta ne contient pas tous les symboles Unicode. Un
-  -- préfixe ASCII reste lisible dans toutes les polices locales.
+  -- The beta font lacks some Unicode symbols. An ASCII prefix
+  -- stays readable in every local font.
   return classicXP and ((self.locale == "frFR" and "env. " or "approx. ") .. classicXP .. " XP") or nil
 end
 
@@ -612,25 +612,25 @@ function CA:GetRewardSummary(questID)
 end
 
 function CA:GetQuestRewardItems(questID)
-  -- Pour éviter une donnée inventée, les récompenses ne sont montrées que
-  -- lorsque le client les expose pour une quête réellement dans le journal.
+  -- To avoid made-up data, rewards are shown only when the client
+  -- exposes them for a quest that is actually in the log.
   if not self:IsQuestInLog(questID) then return self.questRewardIndex[questID] or {} end
   local items, choices = {}, {}
   local function addItem(target, itemName, texture, amount, itemID)
     if type(itemName) ~= "string" or itemName == "" then return end
-    -- Une récompense unique doit être traitée comme 1 et jamais comparée à nil.
+    -- A single reward must be treated as 1 and never compared with nil.
     table.insert(target, { name = itemName, texture = texture, amount = tonumber(amount) or 1, itemID = itemID })
   end
   if C_QuestLog and C_QuestLog.GetQuestRewardInfo then
     for itemIndex = 1, 6 do
-      -- Réponses : nom, texture, quantité, qualité, utilisable, itemID.
-      -- pcall ajoute sa propre valeur booléenne en première position.
+      -- Returns: name, texture, count, quality, usable, itemID.
+      -- pcall adds its own boolean in first position.
       local ok, itemName, texture, amount, _, _, itemID = pcall(C_QuestLog.GetQuestRewardInfo, itemIndex, questID)
       if ok then addItem(items, itemName, texture, amount, itemID) end
     end
   end
-  -- L'API Classic/Forever exposée dans le client de la bêta est cette
-  -- variante globale (index de récompense, ID de quête).
+  -- The Classic/Forever API exposed by the beta client is this
+  -- global variant (reward index, quest ID).
   if #items == 0 and GetQuestLogRewardInfo then
     local count = GetNumQuestLogRewards and GetNumQuestLogRewards(questID) or 6
     for itemIndex = 1, count do
@@ -638,8 +638,8 @@ function CA:GetQuestRewardItems(questID)
       if ok then addItem(items, itemName, texture, amount, itemID) end
     end
   end
-  -- Les récompenses au choix ont leur propre API : c'est notamment le cas
-  -- de « La confrérie des voleurs » et de ses armes de milice.
+  -- Choice rewards have their own API: this is the case, for example, of
+  -- "The Defias Brotherhood" and its militia weapons.
   if GetQuestLogChoiceInfo and GetNumQuestLogChoices then
     local okCount, count = pcall(GetNumQuestLogChoices, questID)
     if okCount and type(count) == "number" then
@@ -658,8 +658,8 @@ function CA:LinkNames(ids)
   if not ids or #ids == 0 then return "—" end
   local names = {}
   for _, id in ipairs(ids) do table.insert(names, self:QuestName(id)) end
-  -- La flèche Unicode était affichée comme un rectangle par la police de
-  -- détail des quêtes. La virgule est volontairement un séparateur ASCII.
+  -- The Unicode arrow was shown as a rectangle by the quest details
+  -- font. The comma is deliberately an ASCII separator.
   return table.concat(names, ", ")
 end
 
@@ -689,9 +689,9 @@ function CA:BuildQuestTree(zone)
   for _, quest in ipairs(zoneQuests) do inZone[quest.id] = true; children[quest.id] = {} end
   for _, quest in ipairs(zoneQuests) do
     local links = self:GetQuestLinks(quest.id)
-    -- Un prérequis situé dans cette zone devient le parent visuel. Si une
-    -- quête offre plusieurs alternatives, la première connue suffit pour
-    -- l'arbre ; les autres restent visibles dans la fiche détaillée.
+    -- A prerequisite located in this zone becomes the visual parent. When a
+    -- quest offers several alternatives, the first known one is enough for
+    -- the tree; the others stay visible in the details.
     for _, prerequisite in ipairs(links.previous) do
       if inZone[prerequisite] then parentFor[quest.id] = prerequisite; break end
     end
@@ -710,17 +710,17 @@ function CA:BuildQuestTree(zone)
     for _, childID in ipairs(children[questID]) do addBranch(childID, depth + 1) end
   end
   for _, quest in ipairs(zoneQuests) do if not parentFor[quest.id] then addBranch(quest.id, 0) end end
-  -- Protection contre une donnée externe cyclique ou un parent absent.
+  -- Guards against cyclic external data or a missing parent.
   for _, quest in ipairs(zoneQuests) do addBranch(quest.id, 0) end
   return ordered
 end
 
 function CA:BuildQuestDisplay(zone)
-  -- Une "série" est un composant complet du graphe de prérequis de la zone,
-  -- et non plus seulement la branche d'une racine. L'ancien affichage pouvait
-  -- séparer une même série dès qu'une quête avait plusieurs prérequis, ce qui
-  -- faisait paraître ses étapes en double et laissait des barres verticales
-  -- sans en-tête apparent.
+  -- A "chain" is a whole connected component of the zone's prerequisite
+  -- graph, no longer just the branch of one root. The former display could
+  -- split a chain as soon as a quest had several prerequisites, which made
+  -- its steps look duplicated and left vertical bars without a visible
+  -- header.
   local zoneQuests = self:GetAccessibleZoneQuests(zone)
   local inZone, neighbors, parentFor, children = {}, {}, {}, {}
   for _, quest in ipairs(zoneQuests) do
@@ -742,9 +742,9 @@ function CA:BuildQuestDisplay(zone)
     neighbors[rightID][leftID] = true
   end
 
-  -- Les liens sont lus dans les deux sens : le catalogue normalise déjà ces
-  -- données, mais cela garde l'affichage robuste si une fiche ne renseigne
-  -- qu'un précédent ou qu'un suivant.
+  -- Links are read in both directions: the catalogue already normalizes
+  -- them, but this keeps the display robust when an entry only records
+  -- a previous or a next quest.
   for _, quest in ipairs(zoneQuests) do
     local prerequisites = {}
     local links = self:GetQuestLinks(quest.id)
@@ -763,8 +763,8 @@ function CA:BuildQuestDisplay(zone)
   end
   for _, childIDs in pairs(children) do table.sort(childIDs, byLevelThenID) end
 
-  -- Construit les composants non orientés. Chaque ID de quête appartient à un
-  -- seul bloc, donc une quête n'est jamais répétée par le rendu de la liste.
+  -- Builds the undirected components. Each quest ID belongs to a single
+  -- block, so the list never repeats a quest.
   local components, seen = {}, {}
   for _, quest in ipairs(zoneQuests) do
     if not seen[quest.id] then
@@ -803,8 +803,8 @@ function CA:BuildQuestDisplay(zone)
       end
     end
     for _, rootID in ipairs(roots) do addBranch(rootID) end
-    -- Les graphes cycliques ou incomplets restent visibles, mais toujours dans
-    -- leur bloc unique plutôt qu'en doublon à la fin de la liste.
+    -- Cyclic or incomplete graphs stay visible, but always within their
+    -- single block rather than duplicated at the end of the list.
     for _, questID in ipairs(component) do addBranch(questID) end
     return ordered
   end
@@ -845,8 +845,8 @@ function CA:BuildQuestDisplay(zone)
 end
 
 function CA:InitializeQuestCatalog()
-  -- QuestCatalog.lua est chargé avant ce fichier par le TOC. Il n'y a ni
-  -- index asynchrone, ni addon tiers, ni appel réseau à attendre.
+  -- The TOC loads QuestCatalog.lua before this file. There is no
+  -- asynchronous index, third-party addon or network call to wait for.
   self.zoneQuestIndexReady = true
   self.questRewardIndex = self.questRewardIndex or {}
 end
@@ -882,7 +882,7 @@ function CA:QuestLists(zone)
     local entry = { id = quest.id, name = quest.title or self:QuestName(quest.id) }
     if self:IsQuestCompleted(quest.id) then
       table.insert(completedList, entry)
-      -- Permet aussi de récupérer les quêtes finies avant l'installation de l'addon.
+      -- Also picks up the quests completed before the addon was installed.
       if self:GetTrackingMode() == "account" then self:RecordQuest(quest.id, "completed", true) end
     elseif quest.optional then
       entry.reason = quest.reason
@@ -921,10 +921,10 @@ end
 local function shortText(text, limit)
   text, limit = tostring(text or ""), tonumber(limit) or 0
   if limit < 1 then return "" end
-  -- string.sub travaille en octets : il coupait l'apostrophe typographique
-  -- d'« l’Est » en deux, ce que le client affichait comme un carré. Ce
-  -- parcours respecte les séquences UTF-8 sans dépendre de la lib utf8,
-  -- absente de certains clients Classic.
+  -- string.sub works on bytes: it cut the typographic apostrophe of
+  -- "l’Est" in two, which the client showed as a square. This walk
+  -- respects UTF-8 sequences without relying on the utf8 library,
+  -- which some Classic clients lack.
   local cursor, characters, total = 1, 0, #text
   while cursor <= total and characters < limit do
     local byte = string.byte(text, cursor)
@@ -936,8 +936,8 @@ local function shortText(text, limit)
   return text
 end
 
--- Emblèmes Blizzard natifs : l'indicateur reste correct quel que soit le
--- personnage connecté, sans embarquer une image externe pour les factions.
+-- Native Blizzard emblems: the indicator stays right whatever the
+-- logged-in character, without shipping an external image for the factions.
 local FACTION_ICON_TEXTURES = {
   Alliance = "Interface\\TargetingFrame\\UI-PVP-Alliance",
   Horde = "Interface\\TargetingFrame\\UI-PVP-Horde",
@@ -967,8 +967,8 @@ end
 
 local function normalizedSearch(text)
   text = string.lower(tostring(text or ""))
-  -- Les remplacements sont écrits caractère par caractère : les classes Lua
-  -- travaillent sur les octets et ne conviennent pas à l'UTF-8 français.
+  -- Replacements are written character by character: Lua character classes
+  -- work on bytes and do not suit French UTF-8.
   text = text:gsub("à", "a"):gsub("â", "a"):gsub("ä", "a"):gsub("À", "a"):gsub("Â", "a"):gsub("Ä", "a")
   text = text:gsub("é", "e"):gsub("è", "e"):gsub("ê", "e"):gsub("ë", "e"):gsub("É", "e"):gsub("È", "e"):gsub("Ê", "e"):gsub("Ë", "e")
   text = text:gsub("î", "i"):gsub("ï", "i"):gsub("Î", "i"):gsub("Ï", "i"):gsub("ô", "o"):gsub("ö", "o"):gsub("Ô", "o"):gsub("Ö", "o")
@@ -1013,23 +1013,23 @@ function CA:SetActiveContinent(continent)
   self:Refresh()
 end
 
--- Ces variables sont déclarées avant les fonctions de lecture afin que Lua
--- les capture bien comme locales : les données sont renseignées plus bas,
--- avant que le client ne puisse déclencher PLAYER_LOGIN.
+-- These variables are declared before the reading functions so that Lua
+-- captures them as locals: the data is filled in further down, before
+-- the client can fire PLAYER_LOGIN.
 local PROFESSION_DEFINITIONS, PROFESSION_BY_ID, PROFESSION_NAME_TO_ID, STATIC_PROFESSION_CATALOGS, STATIC_RECIPE_TO_PROFESSION
--- Incrémente cette version lorsque la méthode de lecture d'un catalogue
--- évolue. Ainsi un ancien état incomplet ou erroné ne peut jamais être repris
--- comme un état « appris » par la nouvelle méthode.
+-- Increment this version when the way a catalogue is read changes,
+-- so that an old, incomplete or wrong state can never be taken over as
+-- a "learned" state by the new method.
 local PROFESSION_CATALOG_SYNC_VERSION = 11
 
 function CA:GetProfessionStorage()
   ChroniquesAzerothCharacterDB = ChroniquesAzerothCharacterDB or {}
   ChroniquesAzerothCharacterDB.professions = ChroniquesAzerothCharacterDB.professions or {}
   local storage = ChroniquesAzerothCharacterDB.professions
-  -- Les métiers restent enregistrés par personnage, puis sont indexés dans
-  -- les variables de compte. Cela permet au bouton Compte d'agréger les
-  -- recettes réellement lues sur plusieurs personnages sans emprunter de
-  -- données à un addon tiers.
+  -- Professions are saved per character, then indexed in the account
+  -- variables. This lets the Account button merge the recipes actually
+  -- read on several characters without borrowing data from a
+  -- third-party addon.
   ChroniquesAzerothDB = ChroniquesAzerothDB or { completed = {}, accepted = {}, trackingMode = "account" }
   ChroniquesAzerothDB.professionCharacters = ChroniquesAzerothDB.professionCharacters or {}
   ChroniquesAzerothDB.professionCharacters[self:GetCharacterKey()] = storage
@@ -1044,8 +1044,8 @@ function CA:PublishProfessionStorage(storage)
 end
 
 function CA:GetAccountProfessionStorage()
-  -- Garantit que le personnage connecté participe lui aussi à l'agrégat,
-  -- même avant sa première ouverture de métier dans cette version.
+  -- Makes sure the logged-in character also takes part in the merge,
+  -- even before it first opens a profession in this version.
   self:GetProfessionStorage()
   local aggregate = {}
   for _, characterStorage in pairs(ChroniquesAzerothDB.professionCharacters or {}) do
@@ -1075,8 +1075,8 @@ function CA:GetAccountProfessionStorage()
                 mergedRecipe.icon = recipe.icon or mergedRecipe.icon
                 mergedRecipe.link = recipe.link or mergedRecipe.link
                 mergedRecipe.reagents = recipe.reagents or mergedRecipe.reagents
-                -- Une recette devient connue au niveau du compte dès qu'un
-                -- personnage synchronisé la connaît ; jamais l'inverse.
+                -- A recipe becomes known for the account as soon as one
+                -- synchronized character knows it; never the other way round.
                 mergedRecipe.learned = mergedRecipe.learned or recipe.learned == true
                 merged.recipes[key] = mergedRecipe
               end
@@ -1095,10 +1095,10 @@ local function professionIDFor(name, skillLine)
   return PROFESSION_NAME_TO_ID[name]
 end
 
--- Les catalogues ci-dessous sont fournis localement par le fichier
--- ProfessionCatalog.lua, généré depuis les pages Forever de Wowhead. Ils ne
--- déclenchent aucune requête réseau : les noms et les icônes viennent des
--- sortilèges déjà présents dans le client du joueur.
+-- The catalogues below are provided locally by the file
+-- ProfessionCatalog.lua, generated from the Forever pages of Wowhead. They
+-- make no network request: names and icons come from the spells
+-- already present in the player's client.
 local function catalogSourceText(code)
   if type(code) ~= "string" or code == "" then
     return CA:L("sourceUnknown")
@@ -1141,9 +1141,9 @@ STATIC_PROFESSION_CATALOGS = parseStaticProfessionCatalogs()
 STATIC_RECIPE_TO_PROFESSION = {}
 for professionID, catalog in pairs(STATIC_PROFESSION_CATALOGS) do
   for _, recipe in ipairs(catalog) do
-    -- Certains sorts appartiennent à plusieurs catalogues historiques. Le
-    -- premier métier déclaré conserve alors la priorité, ce qui suffit à
-    -- identifier la fenêtre actuellement ouverte sans toucher à ses données.
+    -- Some spells belong to several historical catalogues. The first
+    -- profession declared then keeps priority, which is enough to
+    -- identify the window currently open without touching its data.
     STATIC_RECIPE_TO_PROFESSION[recipe.id] = STATIC_RECIPE_TO_PROFESSION[recipe.id] or professionID
   end
 end
@@ -1163,11 +1163,11 @@ local function catalogSpellInfo(recipeID)
   return name or CA:L("recipeFallback", recipeID), icon
 end
 
--- GetTradeSkillInfo fournit un nom localisé mais, sur Forever, pas toujours
--- un lien qui contient l'ID du sort. Le catalogue de Chroniques construit son
--- propre index localement et paresseusement depuis
--- GetSpellInfo : ce sont des données déjà installées par le client, sans
--- appel réseau ni chargement de recette.
+-- GetTradeSkillInfo provides a localized name but, on Forever, not always
+-- a link holding the spell ID. The Chronicles catalogue builds its own
+-- index locally and lazily from
+-- GetSpellInfo: this is data the client already installed, with no
+-- network call and no recipe loading.
 local STATIC_RECIPE_ID_BY_NAME = {}
 local function staticRecipeIDByName(professionID, recipeName)
   if type(recipeName) ~= "string" or recipeName == "" then return nil end
@@ -1177,9 +1177,9 @@ local function staticRecipeIDByName(professionID, recipeName)
     for _, recipe in ipairs(STATIC_PROFESSION_CATALOGS[professionID] or {}) do
       local name = catalogSpellInfo(recipe.id)
       if type(name) == "string" and name ~= "" and not name:match("^Recette #") and not name:match("^Recipe #") then
-        -- Conserver le premier ID suffit pour les rares homonymes :
-        -- il appartient à la même profession et la fenêtre native en donne le
-        -- même état connu/inconnu.
+        -- Keeping the first ID is enough for the rare namesakes:
+        -- it belongs to the same profession and the native window gives it the
+        -- same known/unknown state.
         names[name] = names[name] or recipe.id
       end
     end
@@ -1188,9 +1188,9 @@ local function staticRecipeIDByName(professionID, recipeName)
   return names[recipeName]
 end
 
--- GetItemInfo est asynchrone sur Classic : il peut donc ne pas encore fournir
--- le nom d'un composant. Son icône, en revanche, est souvent déjà disponible
--- par ID. On la lit sans requête serveur ni attente du cache.
+-- GetItemInfo is asynchronous on Classic, so it may not provide a
+-- reagent's name yet. Its icon, on the other hand, is often already
+-- available by ID. It is read without a server request or waiting for the cache.
 local function itemIconFor(itemID)
   itemID = tonumber(itemID)
   if not itemID then return nil end
@@ -1234,10 +1234,10 @@ end
 
 local function cachedRecipeIDByName(record, professionID, recipeName)
   if type(recipeName) ~= "string" or recipeName == "" then return nil end
-  -- Le client Classic résout aussi un sort par son nom localisé. Essayer
-  -- cette API d'abord évite de dépendre d'un
-  -- nom préchargé dans notre catalogue compact. L'ID reste borné au métier
-  -- actuel afin qu'un sort homonyme de classe ne soit jamais comptabilisé.
+  -- The Classic client also resolves a spell by its localized name. Trying
+  -- this API first avoids depending on a
+  -- name preloaded in our compact catalogue. The ID stays limited to the
+  -- current profession so that a class spell of the same name never counts.
   if type(C_Spell) == "table" and type(C_Spell.GetSpellInfo) == "function" then
     local infoOK, info = pcall(C_Spell.GetSpellInfo, recipeName)
     local recipeID = infoOK and type(info) == "table" and tonumber(info.spellID) or nil
@@ -1254,8 +1254,8 @@ local function cachedRecipeIDByName(record, professionID, recipeName)
   return staticRecipeIDByName(professionID, recipeName)
 end
 
--- Lit uniquement les rangs que le client expose déjà. Cette fonction n'ouvre
--- aucune fenêtre de métier et ne demande aucune donnée supplémentaire.
+-- Reads only the ranks the client already exposes. This function opens
+-- no profession window and requests no extra data.
 function CA:ReadPlayerProfessions()
   local storage, found = self:GetProfessionStorage(), {}
   local couldRead = false
@@ -1284,8 +1284,8 @@ function CA:ReadPlayerProfessions()
     end
   end
 
-  -- Le client Forever peut encore exposer les lignes de compétence historiques.
-  -- Le repli ne modifie pas l'état visuel des cadres natifs (pas d'ExpandSkillHeader).
+  -- The Forever client may still expose the historical skill lines.
+  -- The fallback does not change the visual state of the native frames (no ExpandSkillHeader).
   if not couldRead and type(GetNumSkillLines) == "function" and type(GetSkillLineInfo) == "function" then
     local countOK, lineCount = pcall(GetNumSkillLines)
     if countOK and type(lineCount) == "number" then
@@ -1317,8 +1317,8 @@ function CA:ReadPlayerProfessions()
   return storage
 end
 
--- Le catalogue ne force aucun chargement côté serveur. Il mémorise uniquement
--- ce que l'interface Blizzard expose lorsque le joueur ouvre son métier.
+-- The catalogue forces no loading on the server side. It only records
+-- what the Blizzard interface exposes when the player opens a profession.
 function CA:RecordProfessionRecipe(record, recipeID, name, icon, link, learned, source)
   if type(name) ~= "string" or name == "" then return false end
   record.recipes = record.recipes or {}
@@ -1328,19 +1328,19 @@ function CA:RecordProfessionRecipe(record, recipeID, name, icon, link, learned, 
   recipe.name = name
   recipe.icon = icon or recipe.icon
   recipe.link = type(link) == "string" and link or recipe.link
-  -- Une recette n'est apprise que lorsqu'une source Blizzard l'a affirmé.
-  -- Les anciennes versions conservaient nil comme « apprise », ce qui a pu
-  -- transformer tout un catalogue historique en faux positif.
+  -- A recipe is learned only once a Blizzard source has stated it.
+  -- Older versions kept nil as "learned", which could turn a whole
+  -- historical catalogue into false positives.
   recipe.learned = learned == true
   if type(source) == "string" and source ~= "" then recipe.source = source end
   record.recipes[key] = recipe
   return true
 end
 
--- Raccourci pour NEW_RECIPE_LEARNED / LEARNED_SPELL_IN_TAB. Le
--- catalogue donne le métier correspondant au sort ; aucune fenêtre Blizzard
--- n'est ouverte et aucune donnée n'est demandée au serveur ici. Ce signal
--- complète un relevé déjà établi par ScanOpenProfession.
+-- Shortcut for NEW_RECIPE_LEARNED / LEARNED_SPELL_IN_TAB. The
+-- catalogue gives the profession of the spell; no Blizzard window is
+-- opened and no data is requested from the server here. This signal
+-- completes a record already made by ScanOpenProfession.
 function CA:RecordProfessionSpellLearned(recipeID)
   recipeID = tonumber(recipeID)
   local professionID = recipeID and STATIC_RECIPE_TO_PROFESSION[recipeID]
@@ -1369,15 +1369,15 @@ end
 function CA:GetProfessionRecipes(record, professionID)
   local recipes, seen = {}, {}
   local savedRecipes = record and record.recipes or {}
-  -- Les versions antérieures supposaient à tort qu'une propriété absente
-  -- signifiait « apprise ». Leur état est conservé pour les noms/icônes, mais
-  -- ne compte jamais comme appris avant une resynchronisation fiable.
+  -- Earlier versions wrongly assumed that a missing property meant
+  -- "learned". Their state is kept for names and icons, but never
+  -- counts as learned before a reliable resynchronization.
   local hasReliableLearnedState = record and tonumber(record.catalogSyncVersion) == PROFESSION_CATALOG_SYNC_VERSION
 
-  -- Le catalogue statique garantit une liste complète, y compris pour une
-  -- profession que le personnage ne possède pas encore. Une entrée mémorisée
-  -- depuis la fenêtre native garde toujours la priorité pour le nom, l'icône,
-  -- l'état « apprise » et une provenance plus précise éventuelle.
+  -- The static catalogue guarantees a complete list, including for a
+  -- profession the character does not have yet. An entry recorded from
+  -- the native window always keeps priority for the name, the icon, the
+  -- "learned" state and a possibly more precise source.
   for _, staticRecipe in ipairs(STATIC_PROFESSION_CATALOGS[professionID] or {}) do
     local key = tostring(staticRecipe.id)
     local saved = savedRecipes[key]
@@ -1397,9 +1397,9 @@ function CA:GetProfessionRecipes(record, professionID)
     table.insert(recipes, recipe)
   end
 
-  -- Les listes natives Forever peuvent aussi contenir une recette récente non
-  -- encore présente dans la prochaine révision du catalogue embarqué : elle
-  -- reste donc visible au lieu d'être masquée.
+  -- The native Forever lists may also hold a recent recipe that is not
+  -- in the embedded catalogue yet: it stays visible
+  -- instead of being hidden.
   for key, saved in pairs(savedRecipes) do
     if not seen[key] then
       table.insert(recipes, {
@@ -1423,15 +1423,15 @@ function CA:GetProfessionRecipes(record, professionID)
   return recipes
 end
 
--- La résolution d'un sort peut être coûteuse pour les catalogues Forever
--- étendus. Elle est donc faite seulement pour les lignes visibles et pour la
--- recette sélectionnée, jamais pour les 506 entrées à la connexion.
+-- Resolving a spell can be costly for the large Forever catalogues.
+-- It is therefore done only for the visible rows and for the
+-- selected recipe, never for all 506 entries at login.
 function CA:HydrateProfessionRecipe(recipe)
   if not recipe then return recipe end
 
-  -- Quand la fenêtre native du métier est encore disponible, elle est la
-  -- meilleure source pour l'icône de l'objet fabriqué. Le sort de métier
-  -- peut en effet avoir une icône générique violette, différente de l'objet.
+  -- While the native profession window is still available, it is the
+  -- best source for the icon of the crafted item. The profession spell
+  -- may indeed have a generic purple icon, different from the item.
   if type(C_TradeSkillUI) == "table" and type(C_TradeSkillUI.GetRecipeInfo) == "function" and type(recipe.id) == "number" then
     local infoOK, info = pcall(C_TradeSkillUI.GetRecipeInfo, recipe.id)
     if infoOK and type(info) == "table" then
@@ -1440,9 +1440,9 @@ function CA:HydrateProfessionRecipe(recipe)
     end
   end
 
-  -- Les noms persistés peuvent provenir d'une ancienne session dans une autre
-  -- langue. Le sort local est l'autorité et reflète toujours la langue du
-  -- client actuel ; cette lecture ne concerne que les lignes visibles.
+  -- Saved names may come from an earlier session in another
+  -- language. The local spell is the authority and always follows the
+  -- current client language; this reading only concerns the visible rows.
   local localizedName, localizedIcon = catalogSpellInfo(recipe.id)
   if localizedName and localizedName ~= "" then recipe.name = localizedName end
   recipe.icon = recipe.icon or localizedIcon
@@ -1497,9 +1497,9 @@ function CA:CacheProfessionRecipeDetails(recipe, record)
     return
   end
 
-  -- La fiche de schéma expose l'icône du résultat sur les clients Forever.
-  -- On ne consulte que la recette sélectionnée : pas de parcours massif des
-  -- schémas, donc aucune pause quand une profession est ouverte.
+  -- The schematic exposes the icon of the result on Forever clients.
+  -- Only the selected recipe is read: no mass walk through the
+  -- schematics, so no freeze when a profession is opened.
   local outputItemID = tonumber(schematic.outputItemID)
   local outputIcon = schematic.icon or schematic.outputItemIcon or itemIconFor(outputItemID)
   if outputIcon then
@@ -1521,8 +1521,8 @@ function CA:CacheProfessionRecipeDetails(recipe, record)
     end
   end
   if #reagents > 0 then recipe.reagents = reagents end
-  -- Seuls les détails de la recette sélectionnée sont mémorisés. Cela évite
-  -- de scanner des centaines de schémas à l'ouverture d'une profession.
+  -- Only the details of the selected recipe are recorded. This avoids
+  -- scanning hundreds of schematics when a profession is opened.
   if stored and #reagents > 0 then stored.reagents = reagents end
   if stored then self:PublishProfessionStorage(self:GetProfessionStorage()) end
 end
@@ -1533,9 +1533,9 @@ local function nativeFrameIsVisible(frame)
   return ok and visible and true or false
 end
 
--- Forever mélange les anciens cadres Classic et les API plus récentes selon
--- la build. Centraliser la lecture évite qu'un seul indicateur absent bloque
--- tout le relevé. Les champs servent également au diagnostic /ca diag.
+-- Forever mixes the old Classic frames and the more recent APIs depending
+-- on the build. Reading them in one place keeps a single missing flag from
+-- blocking the whole record. The fields also feed the /ca diag diagnostic.
 local function readNativeProfessionContext()
   local context = {
     lineAPI = type(GetTradeSkillLine) == "function",
@@ -1567,8 +1567,8 @@ local function readNativeProfessionContext()
       context.name, context.rank, context.maxRank = name, rank, maxRank
     end
   end
-  -- Certains cadres Forever renseignent le titre avant GetTradeSkillLine.
-  -- C'est une donnée de l'interface Blizzard, pas une hypothèse sur le métier.
+  -- Some Forever frames fill in the title before GetTradeSkillLine.
+  -- This is data from the Blizzard interface, not a guess about the profession.
   if (type(context.name) ~= "string" or context.name == "") and _G.TradeSkillFrameTitleText and type(_G.TradeSkillFrameTitleText.GetText) == "function" then
     local ok, title = pcall(_G.TradeSkillFrameTitleText.GetText, _G.TradeSkillFrameTitleText)
     if ok and type(title) == "string" and title ~= "" then context.name = title end
@@ -1587,14 +1587,14 @@ local function nativeProfessionWindowIsUsable()
     and (context.professionID ~= nil or context.entries > 0 or context.frameVisible)
 end
 
--- Repli autonome : les recettes sont des sorts du personnage. Quand Forever
--- n'expose pas sa liste de métier à un addon, IsSpellKnown reste l'API
--- Blizzard disponible pour déterminer les recettes que CE personnage connaît.
--- On ne l'emploie que sur le catalogue local du métier concerné (506 entrées
--- au plus), jamais pour deviner ou obtenir des recettes distantes.
+-- Self-contained fallback: recipes are spells of the character. When Forever
+-- does not expose its profession list to an addon, IsSpellKnown remains the
+-- Blizzard API available to tell which recipes THIS character knows.
+-- It is used only on the local catalogue of the profession concerned (506
+-- entries at most), never to guess or fetch remote recipes.
 local function isRecipeSpellKnown(recipeID)
-  -- IsSpellKnown est présent sur les builds Classic. IsPlayerSpell est le
-  -- repli fourni par certaines builds hybrides de Forever.
+  -- IsSpellKnown exists on Classic builds. IsPlayerSpell is the
+  -- fallback some hybrid Forever builds provide.
   if type(IsSpellKnown) == "function" then
     local ok, known = pcall(IsSpellKnown, recipeID)
     if ok and known then return true, "IsSpellKnown" end
@@ -1610,10 +1610,10 @@ local function spellbookAPIIsAvailable()
   return type(IsSpellKnown) == "function" or type(IsPlayerSpell) == "function"
 end
 
--- Une migration de méthode ne doit jamais conserver des « appris » posés par
--- un ancien relevé incomplet. Les données utiles (nom, icône, lien, sources)
--- restent, seul l'état appris est réinitialisé puis reconstruit par les API
--- Blizzard de la version courante.
+-- A change of method must never keep "learned" states set by an
+-- older, incomplete record. The useful data (name, icon, link, sources)
+-- stays; only the learned state is reset, then rebuilt by the Blizzard
+-- APIs of the current version.
 local function resetStaleRecipeLearnedState(record)
   if tonumber(record.catalogSyncVersion) == PROFESSION_CATALOG_SYNC_VERSION then return end
   for _, recipe in pairs(record.recipes or {}) do
@@ -1642,9 +1642,9 @@ local function recordKnownRecipesFromSpellbook(owner, record, professionID, scan
   return known
 end
 
--- Cette lecture ne requiert pas la fenêtre de métier. Elle est donc le chemin
--- principal sur les builds Forever qui n'exposent pas GetTradeSkillLine aux
--- addons tiers alors que le personnage connaît bien le métier.
+-- This reading does not need the profession window. It is therefore the main
+-- path on Forever builds that do not expose GetTradeSkillLine to
+-- third-party addons although the character does know the profession.
 function CA:ScanKnownProfessionSpellbooks()
   local storage = self:ReadPlayerProfessions()
   local info = { professions = 0, known = 0, spellbookAPI = spellbookAPIIsAvailable() }
@@ -1699,15 +1699,15 @@ function CA:ScanOpenProfession()
   scanInfo.recipeIDs = #recipeIDs
 
   local name, rank, maxRank = context.name, context.rank, context.maxRank
-  -- Selon l'étape de chargement de la fenêtre Classic, GetTradeSkillLine peut
-  -- être vide alors que les recettes sont déjà exposées. Les IDs du catalogue
-  -- permettent alors d'identifier le métier, sans deviner ni charger de data.
+  -- Depending on the loading stage of the Classic window, GetTradeSkillLine may
+  -- be empty while the recipes are already exposed. The catalogue IDs
+  -- then identify the profession, without guessing or loading data.
   local professionID = context.professionID or professionFromRecipeIDs(recipeIDs)
   local storage = self:ReadPlayerProfessions()
-  -- Lorsque la fenêtre Forever est visible mais ne publie ni ligne ni liste,
-  -- le dernier métier ouvert / sélectionné est un contexte sûr : il doit être
-  -- déjà appris par le personnage. Cela permet le repli IsSpellKnown sans
-  -- attribuer des recettes à une profession arbitraire.
+  -- When the Forever window is visible but publishes neither a line nor a list,
+  -- the last profession opened or selected is a safe context: the character
+  -- must already have learned it. This allows the IsSpellKnown fallback without
+  -- attributing recipes to an arbitrary profession.
   if not professionID and (context.frameVisible or self.professionNativeWindowObserved) then
     local preferred = self.lastScannedProfessionID or self.selectedProfessionID
     if preferred and storage[preferred] and storage[preferred].learned then professionID = preferred end
@@ -1753,13 +1753,13 @@ function CA:ScanOpenProfession()
           local linkOK, value = pcall(C_TradeSkillUI.GetRecipeLink, recipeID)
           if linkOK then link = value end
         end
-        -- Sur ce client Forever, les drapeaux modernes indiquent que la
-        -- recette existe dans le catalogue, pas qu'elle est connue par le
-        -- personnage. Ils ne sont donc jamais utilisés pour le comptage.
+        -- On this Forever client, the modern flags tell that the
+        -- recipe exists in the catalogue, not that the character
+        -- knows it. They are therefore never used for counting.
         local recipeLearned = false
-        -- La provenance et les composants sont lus seulement pour la recette
-        -- sélectionnée : parcourir ces détails pour des milliers d'entrées
-        -- à l'ouverture du métier créerait une pause inutile.
+        -- The source and the reagents are read only for the selected
+        -- recipe: walking through these details for thousands of entries
+        -- when the profession opens would cause a needless freeze.
         if self:RecordProfessionRecipe(record, recipeID, info.name, info.icon or info.iconID, link, recipeLearned) then
           scanned = scanned + 1
         end
@@ -1767,9 +1767,9 @@ function CA:ScanOpenProfession()
     end
   end
 
-  -- La fenêtre native est l'autorité. Forever emploie aussi « used » et « none » pour
-  -- des recettes connues ; les exclure laisse artificiellement le compteur à
-  -- zéro. Les en-têtes restent exclus car ils n'ont aucun de ces types.
+  -- The native window is the authority. Forever also uses "used" and "none" for
+  -- known recipes; leaving them out would keep the counter at zero for no
+  -- reason. Headers stay excluded as they have none of these types.
   if context.listAPI and context.entries > 0 then
     local knownRecipeTypes = { optimal = true, medium = true, easy = true, trivial = true, used = true, none = true }
     local recipeCount = context.entries
@@ -1800,9 +1800,9 @@ function CA:ScanOpenProfession()
     end
   end
 
-  -- Complète le résultat de la liste native ou prend entièrement le relais
-  -- lorsqu'elle n'est pas publiée par Forever. La même recette ne peut être
-  -- comptée qu'une fois : RecordProfessionRecipe utilise l'ID du catalogue.
+  -- Completes the result of the native list, or takes over entirely
+  -- when Forever does not publish it. A recipe can only be counted
+  -- once: RecordProfessionRecipe uses the catalogue ID.
   knownScanned = knownScanned + recordKnownRecipesFromSpellbook(self, record, professionID, scanInfo)
 
   self.selectedProfessionID = professionID
@@ -1817,9 +1817,9 @@ function CA:ScanOpenProfession()
   return knownScanned > 0
 end
 
--- TRADE_SKILL_SHOW arrive parfois avant que le client ait rempli la liste.
--- Cette file laisse donc la fenêtre Blizzard se stabiliser, puis effectue un
--- seul repli si nécessaire.
+-- TRADE_SKILL_SHOW sometimes arrives before the client has filled the list.
+-- This queue therefore lets the Blizzard window settle, then makes a
+-- single fallback reading if needed.
 function CA:QueueProfessionScan(isRetry)
   if self.professionScanQueued then return end
   self.professionScanQueued = true
@@ -1837,9 +1837,9 @@ function CA:QueueProfessionScan(isRetry)
   end
 end
 
--- Lorsqu'on ouvre Chroniques après la fenêtre de métier, certains clients
--- Forever n'envoient plus TRADE_SKILL_SHOW à notre frame. Cette vérification
--- autonome garantit une lecture unique de la fenêtre déjà visible.
+-- When Chronicles is opened after the profession window, some Forever
+-- clients no longer send TRADE_SKILL_SHOW to our frame. This
+-- self-contained check guarantees a single reading of the window already shown.
 function CA:EnsureVisibleProfessionScan()
   if not nativeProfessionWindowIsUsable() then
     self.professionNativeWindowObserved = nil
@@ -1870,8 +1870,8 @@ end
 local function panel(parent, width, height, r, g, b)
   local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
   f:SetSize(width, height)
-  -- Texture native, répétée discrètement : aucun cadre illustré ou ornement
-  -- généré n'est utilisé dans les panneaux de consultation.
+  -- Native texture, discreetly tiled: no illustrated frame or generated
+  -- ornament is used in the browsing panels.
   f:SetBackdrop({ bgFile = "Interface/Tooltips/UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 14, insets = { left = 3, right = 3, top = 3, bottom = 3 } })
   f:SetBackdropColor(r or .10, g or .065, b or .030, .96)
   f:SetBackdropBorderColor(.65, .42, .15, 1)
@@ -1886,27 +1886,27 @@ local function label(parent, text, size, color)
   return fs
 end
 
--- Les illustrations sont livrées avec l'add-on. Le format TGA est utilisé
--- volontairement : il est pris en charge par le client Classic sans dépendre
--- de l'import PNG d'une version précise du jeu.
+-- The artwork ships with the addon. TGA is used on purpose: the
+-- Classic client supports it without depending on the PNG import
+-- of a given game version.
 local ASSET_PATH = "Interface\\AddOns\\ChroniquesAzeroth\\Assets\\"
 local QUEST_ROW_HEIGHT = 24
--- Vert de progression inspiré des barres du journal Blizzard : plus profond
--- et moins fluorescent que le vert de validation des quêtes terminées.
+-- Progress green inspired by the bars of the Blizzard journal: deeper
+-- and less fluorescent than the green of completed quests.
 local PROGRESS_BAR_COLOR = { .16, .42, .07 }
 local PROGRESS_TEXT_COLOR = { .30, .68, .14 }
 local PROGRESS_RING_COLOR = { .25, .56, .10 }
 local PROFESSION_RECIPE_ROW_HEIGHT = 24
--- Liste virtualisée : même un métier Forever très fourni reste fluide et ne
--- crée pas des centaines de boutons au chargement de l'addon.
+-- Virtualized list: even a very large Forever profession stays smooth and
+-- does not create hundreds of buttons when the addon loads.
 local PROFESSION_RECIPE_VISIBLE_ROWS = 14
--- Une zone Classic dépasse rarement 300 quêtes ; cette réserve évite toute
--- reconstruction de panneaux et protège la liste si Forever ajoute de
--- nouvelles quêtes à une zone.
+-- A Classic zone rarely exceeds 300 quests; this margin avoids rebuilding
+-- any panel and protects the list if Forever adds
+-- new quests to a zone.
 local MAX_QUEST_ROWS = 500
 
--- Phase 1 : répertoire visuel des métiers Classic et de leurs rangs. Les
--- patrons absents / leurs sources seront ajoutés avec le catalogue de phase 2.
+-- Phase 1: visual directory of the Classic professions and their ranks.
+-- Missing patterns and their sources will come with the phase 2 catalogue.
 PROFESSION_DEFINITIONS = {
   { id = 171, names = { frFR = "Alchimie", enUS = "Alchemy" }, icon = "Interface\\Icons\\Trade_Alchemy" },
   { id = 164, names = { frFR = "Forge", enUS = "Blacksmithing" }, icon = "Interface\\Icons\\Trade_BlackSmithing" },
@@ -1936,10 +1936,10 @@ PROFESSION_BY_ID, PROFESSION_NAME_TO_ID = {}, {
   ["First Aid"] = 129, ["Premiers soins"] = 129, ["Secourisme"] = 129,
 }
 local GATHERING_PROFESSION_IDS = {
-  [182] = true, -- Herboristerie
-  [186] = true, -- Minage
-  [393] = true, -- Dépeçage
-  [356] = true, -- Pêche
+  [182] = true, -- Herbalism
+  [186] = true, -- Mining
+  [393] = true, -- Skinning
+  [356] = true, -- Fishing
 }
 for _, profession in ipairs(PROFESSION_DEFINITIONS) do PROFESSION_BY_ID[profession.id] = profession end
 
@@ -1965,8 +1965,8 @@ local function continentTab(parent, text, iconPath, x, width, onClick)
   tab:SetSize(width, 25); tab:SetPoint("TOPLEFT", x, -40)
   tab:SetBackdrop({ bgFile = "Interface/ChatFrame/ChatFrameBackground", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 9 })
   tab.icon = tab:CreateTexture(nil, "ARTWORK"); tab.icon:SetSize(16, 16); tab.icon:SetPoint("LEFT", 7, 0); tab.icon:SetTexture(iconPath)
-  -- Les deux continents ont la même place ; le libellé reste dans son
-  -- bouton, y compris pour « Royaumes de l’Est ».
+  -- Both continents get the same room; the label stays within its
+  -- button, including for "Royaumes de l’Est".
   tab.text = label(tab, text, 6.5, {.62, .66, .70})
   tab.text:SetSize(width - 37, 20); tab.text:SetPoint("LEFT", tab.icon, "RIGHT", 4, 0)
   tab.text:SetJustifyH("LEFT"); tab.text:SetJustifyV("MIDDLE"); tab.text:SetWordWrap(false)
@@ -2150,9 +2150,9 @@ function CA:RenderProfessionRecipeRows()
       row.name:SetText(shortText(recipe.name, 39))
       local learned = recipe.learned == true
       local level = tonumber(recipe.requiredSkill) or 0
-      -- La police Classic de Forever ne possède pas toujours le glyphe de
-      -- validation :
-      -- elle le rendait sous forme d'un rectangle à côté du niveau.
+      -- The Classic font of Forever does not always have the check mark
+      -- glyph:
+      -- it rendered it as a rectangle next to the level.
       row.known:SetText(level > 0 and (self:L("level") .. " " .. level) or (learned and self:L("known") or self:L("obtain")))
       row.known:SetTextColor(learned and .42 or 1, learned and .82 or .68, learned and .38 or .22)
       local selected = recipe.key == self.selectedProfessionRecipeKey
@@ -2161,8 +2161,8 @@ function CA:RenderProfessionRecipeRows()
         row.button:SetBackdropBorderColor(.20, .62, .90, .9)
         row.name:SetTextColor(.92, .94, .88)
       elseif learned then
-        -- Vert sombre volontairement discret : les recettes maîtrisées se
-        -- repèrent instantanément, sans confondre leur fond avec la sélection.
+        -- Deliberately discreet dark green: mastered recipes stand out at
+        -- a glance, without mistaking their background for the selection.
         row.button:SetBackdropColor(.025, .105, .040, .94)
         row.button:SetBackdropBorderColor(.12, .42, .16, .72)
         row.name:SetTextColor(.50, .91, .54)
@@ -2259,8 +2259,8 @@ function CA:RefreshProfessions()
     row.name:SetText(self:GetProfessionName(definition))
     local catalogTotal, catalogKnown = self:GetProfessionCatalogStats(record, definition.id)
     if GATHERING_PROFESSION_IDS[definition.id] then
-      -- Ces métiers n'ont pas de catalogue de recettes : afficher leur rang
-      -- ici le ferait passer pour un faux compteur de patrons connus.
+      -- These professions have no recipe catalogue: showing their rank
+      -- here would make it look like a false count of known patterns.
       row.rank:SetText("")
       row.name:SetTextColor(selected and 1 or (learned and .84 or .52), selected and .84 or (learned and .86 or .56), selected and .32 or (learned and .70 or .60))
     elseif learned then
@@ -2319,8 +2319,8 @@ function CA:RefreshProfessions()
   end
   self:HydrateProfessionRecipe(selectedRecipe)
   if selectedRecipe and self.professionDetailRecipeKey ~= selectedRecipe.key then
-    -- Les détails lus dans le client restent rattachés au personnage connecté,
-    -- même si le panneau affiche l'union du compte.
+    -- The details read from the client stay attached to the logged-in character,
+    -- even when the panel shows the account's union.
     self:CacheProfessionRecipeDetails(selectedRecipe, characterStorage[definition.id])
     self.professionDetailRecipeKey = selectedRecipe.key
   end
@@ -2331,9 +2331,9 @@ function CA:RefreshProfessions()
   self:RefreshProfessionDetails(selectedRecipe)
 end
 
--- Bouton autour de la minicarte. Il est volontairement séparé du médaillon
--- décoratif de la fenêtre : l'un sert de raccourci permanent, l'autre reste
--- seulement l'emblème de l'interface Chroniques.
+-- Button around the minimap. It is deliberately separate from the
+-- decorative medallion of the window: one is a permanent shortcut, the
+-- other only the emblem of the Chronicles interface.
 function CA:PlaceMinimapButton(angle)
   local button = self.minimapButton
   if not button or not Minimap then return end
@@ -2346,9 +2346,9 @@ end
 
 local function minimapAngleFromOffset(offsetY, offsetX)
   if math.atan2 then return math.atan2(offsetY, offsetX) end
-  -- Repli pour les clients Lua qui n'exposent que math.atan(y). Cette
-  -- conversion conserve le bon quadrant lorsque le bouton passe à gauche de
-  -- la minicarte.
+  -- Fallback for Lua clients that only expose math.atan(y). This
+  -- conversion keeps the right quadrant when the button moves to the left
+  -- of the minimap.
   if offsetX > 0 then return math.atan(offsetY / offsetX) end
   if offsetX < 0 and offsetY >= 0 then return math.atan(offsetY / offsetX) + math.pi end
   if offsetX < 0 then return math.atan(offsetY / offsetX) - math.pi end
@@ -2529,8 +2529,8 @@ function CA:CreateUI()
   f:SetPoint("CENTER")
   f:SetBackdrop({ bgFile = "Interface/Tooltips/UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = "Interface/DialogFrame/UI-DialogBox-Border", edgeSize = 22, insets = { left = 8, right = 8, top = 8, bottom = 8 } })
   f:SetBackdropColor(.075, .042, .020, .98); f:SetBackdropBorderColor(.70, .48, .16, 1)
-  -- Fenêtre de consultation non modale, mais placée au-dessus des panneaux
-  -- ordinaires d'autres addons. DIALOG reste sous les vraies infobulles WoW.
+  -- Non-modal browsing window, but placed above the ordinary panels
+  -- of other addons. DIALOG stays below the real WoW tooltips.
   f:SetFrameStrata("DIALOG")
   f:SetToplevel(true)
   f:SetMovable(true); f:EnableMouse(true); f:RegisterForDrag("LeftButton")
@@ -2539,18 +2539,18 @@ function CA:CreateUI()
   f:SetScript("OnMouseDown", function(frame) frame:Raise() end)
   f:Hide(); self.frame = f
 
-  -- En-tête inspiré de la fenêtre Héritage : bande sombre, filet doré et
-  -- médaillon rond sans encadré carré.
+  -- Header inspired by the Legacy window: dark band, golden line and
+  -- round medallion without a square frame.
   local header = CreateFrame("Frame", nil, f, "BackdropTemplate")
   header:SetPoint("TOPLEFT", 22, -7); header:SetPoint("TOPRIGHT", -22, -7); header:SetHeight(32)
   header:SetBackdrop({ bgFile = "Interface/Tooltips/UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 10 })
   header:SetBackdropColor(.17, .09, .035, 1); header:SetBackdropBorderColor(.64, .42, .14, 1)
-  -- Le cartouche large nuisait au titre sur certains clients beta : le
-  -- médaillon reste, mais l'en-tête décoratif ne recouvre plus le texte.
+  -- The wide cartouche hid the title on some beta clients: the
+  -- medallion stays, but the decorative header no longer covers the text.
   header:Hide()
-  -- Le médaillon étoilé est la signature de Chroniques. Son anneau intégré
-  -- conserve le contour métallique, avec seulement un léger chevauchement du
-  -- coin supérieur gauche du cadre.
+  -- The starred medallion is the signature of Chronicles. Its built-in ring
+  -- keeps the metallic outline, with only a slight overlap of the
+  -- top left corner of the frame.
   local medal = f:CreateTexture(nil, "OVERLAY")
   medal:SetTexture(ASSET_PATH .. "heritage-medallion.tga"); medal:SetSize(64, 64)
   medal:SetPoint("TOPLEFT", f, "TOPLEFT", -10, 5)
@@ -2577,14 +2577,14 @@ function CA:CreateUI()
   end
   local tabDivider = f:CreateTexture(nil, "BORDER"); tabDivider:SetTexture("Interface/Buttons/WHITE8X8"); tabDivider:SetSize(955, 2); tabDivider:SetPoint("TOP", 0, -88); tabDivider:SetVertexColor(.58, .40, .12, .8)
 
-  -- Barre de contexte commune à tous les onglets. Les anciens filtres de
-  -- contenu (extension, continents et niveaux) n'apportaient plus d'action :
-  -- seule la faction connectée est pertinente ici.
+  -- Context bar shared by every tab. The former content filters
+  -- (expansion, continents and levels) no longer led to any action:
+  -- only the faction of the logged-in character matters here.
   local contextDivider = f:CreateTexture(nil, "BORDER")
   contextDivider:SetTexture("Interface/Buttons/WHITE8X8"); contextDivider:SetSize(955, 1)
   contextDivider:SetPoint("TOP", 0, -115); contextDivider:SetVertexColor(.42, .29, .10, .65)
-  -- Deux groupes sur la même ligne de base : le texte et les icônes ne
-  -- semblent plus monter ou descendre selon leur police / texture.
+  -- Two groups on the same baseline: the text and the icons no longer
+  -- seem to rise or fall depending on their font or texture.
   local factionGroup = CreateFrame("Frame", nil, f); factionGroup:SetSize(265, 24); factionGroup:SetPoint("TOPLEFT", 28, -90)
   local factionPrefix = label(factionGroup, self:L("faction"), 10, {.72, .84, .95}); factionPrefix:SetSize(60, 22); factionPrefix:SetPoint("LEFT", 0, 0); factionPrefix:SetJustifyH("LEFT"); factionPrefix:SetJustifyV("MIDDLE")
   local factionIcon = factionGroup:CreateTexture(nil, "ARTWORK"); factionIcon:SetSize(18, 18); factionIcon:SetPoint("LEFT", factionPrefix, "RIGHT", 3, 0)
@@ -2635,8 +2635,8 @@ function CA:CreateUI()
   zoneScroll:SetScrollChild(zoneScrollChild)
   self.zoneScroll, self.zoneScrollChild = zoneScroll, zoneScrollChild
   if zoneScroll.ScrollBar then
-    -- Même ancrage que les cadres Blizzard : les boutons restent dans la
-    -- colonne de droite, et non plus superposés au début de la liste.
+    -- Same anchoring as the Blizzard frames: the buttons stay in the
+    -- right column, no longer on top of the start of the list.
     local buttonHeight = zoneScroll.ScrollBar.ScrollUpButton and zoneScroll.ScrollBar.ScrollUpButton:GetHeight() or 16
     zoneScroll.ScrollBar:ClearAllPoints()
     zoneScroll.ScrollBar:SetPoint("TOPLEFT", zoneScroll, "TOPRIGHT", -16, -buttonHeight - 1)
@@ -2648,8 +2648,8 @@ function CA:CreateUI()
     local row = CreateFrame("Button", nil, zoneScrollChild, "BackdropTemplate")
     row:SetSize(201, 70); row:SetPoint("TOPLEFT", 0, -(i - 1) * 76)
     local rowBackground = ASSET_PATH .. (zone.cardArt or "zone-elwynn.tga")
-    -- La zone est une vraie vignette pleine largeur. Seul son titre repose
-    -- sur un cartouche sombre afin de rester lisible sur toutes les images.
+    -- The zone is a real full-width card. Only its title rests
+    -- on a dark cartouche, to stay readable on every image.
     row:SetBackdrop({ bgFile = rowBackground, edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 11, insets = { left = 3, right = 3, top = 3, bottom = 3 } })
     row:SetBackdropColor(1, 1, 1, 1); row:SetBackdropBorderColor(.50, .35, .11, .9)
     local artShade = row:CreateTexture(nil, "BORDER"); artShade:SetAllPoints(); artShade:SetTexture("Interface/ChatFrame/ChatFrameBackground"); artShade:SetVertexColor(.01, .01, .005, .16)
@@ -2658,15 +2658,15 @@ function CA:CreateUI()
     caption:SetBackdrop({ bgFile = "Interface/ChatFrame/ChatFrameBackground" }); caption:SetBackdropColor(.005, .008, .010, .82)
     local name = label(caption, self:GetZoneName(zone), 10, {1, .86, .45}); name:SetPoint("LEFT", 7, 0); name:SetWidth(130); name:SetJustifyH("LEFT"); name:SetWordWrap(false)
     local count = label(caption, "", 9, {.96, .88, .55}); count:SetPoint("RIGHT", -7, 0)
-    -- Le cadre reste entièrement dans la carte : il ne peut donc pas être
-    -- coupé par le ScrollFrame sur la première ou la dernière ligne.
+    -- The frame stays entirely within the card, so the ScrollFrame cannot
+    -- clip it on the first or the last row.
     local selected = CreateFrame("Frame", nil, row, "BackdropTemplate")
     selected:SetAllPoints()
     selected:SetFrameLevel(row:GetFrameLevel() + 3)
     selected:SetBackdrop({ edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 14 })
     selected:SetBackdropBorderColor(1, .65, .06, 1)
-    -- Le motif Blizzard assure les coins ; les quatre traits internes rendent
-    -- la sélection lisible sans jamais dépasser de la carte dans le défilement.
+    -- The Blizzard pattern draws the corners; the four inner lines make the
+    -- selection readable without ever overflowing the card while scrolling.
     local selectedTop = selected:CreateTexture(nil, "OVERLAY"); selectedTop:SetColorTexture(1, .72, .08, 1); selectedTop:SetPoint("TOPLEFT", 2, -2); selectedTop:SetPoint("TOPRIGHT", -2, -2); selectedTop:SetHeight(2)
     local selectedBottom = selected:CreateTexture(nil, "OVERLAY"); selectedBottom:SetColorTexture(1, .72, .08, 1); selectedBottom:SetPoint("BOTTOMLEFT", 2, 2); selectedBottom:SetPoint("BOTTOMRIGHT", -2, 2); selectedBottom:SetHeight(2)
     local selectedLeft = selected:CreateTexture(nil, "OVERLAY"); selectedLeft:SetColorTexture(1, .72, .08, 1); selectedLeft:SetPoint("TOPLEFT", 2, -2); selectedLeft:SetPoint("BOTTOMLEFT", 2, 2); selectedLeft:SetWidth(2)
@@ -2687,8 +2687,8 @@ function CA:CreateUI()
   local mapText = label(map, string.upper(self:GetZoneName(self.zones[1])), 12, {1, .86, .45}); mapText:SetPoint("TOPLEFT", 13, -12)
   local realm = label(map, self:GetContinentName("east") .. " - " .. self:GetFactionName("Alliance"), 9, {.92, .88, .74}); realm:SetPoint("TOPLEFT", 13, -31); self.realm = realm
   local count = label(map, "", 10, {.96, .93, .82}); count:SetPoint("BOTTOMLEFT", 14, 17); self.count = count
-  -- Le compteur ne possède volontairement aucun fond ou bord carré : seuls
-  -- le pourcentage et sa couronne circulaire restent visibles sur l'illustration.
+  -- The counter deliberately has no square background or border: only
+  -- the percentage and its circular ring stay visible on the artwork.
   local orb = CreateFrame("Frame", nil, map); orb:SetSize(90, 90); orb:SetPoint("TOPRIGHT", -11, -17)
   self.progress = label(orb, "", 22, PROGRESS_TEXT_COLOR); self.progress:SetPoint("CENTER", 0, 5)
   local orbCaption = label(orb, self:L("completed"), 7, {.8, .86, .76}); orbCaption:SetPoint("TOP", self.progress, "BOTTOM", 0, -1)
@@ -2738,8 +2738,8 @@ function CA:CreateUI()
   right:SetBackdropColor(.16, .095, .040, .97); right:SetBackdropBorderColor(.66, .43, .15, 1)
   local rh = label(right, self:GetZoneQuestTitle(self.zones[1]), 15); rh:SetPoint("TOP", 0, -15); self.questTitle = rh
   local scroll = CreateFrame("ScrollFrame", nil, right, "UIPanelScrollFrameTemplate")
-  -- Le contenu remplit maintenant la largeur utile du panneau. L'ascenseur
-  -- reste dans sa propre gouttière, sans réduire inutilement les lignes.
+  -- The content now fills the usable width of the panel. The scroll bar
+  -- stays in its own gutter, without needlessly narrowing the rows.
   scroll:SetPoint("TOPLEFT", 10, -45); scroll:SetSize(360, 331)
   local maxQuestRows = MAX_QUEST_ROWS
   for _, zone in ipairs(self.zones) do maxQuestRows = math.max(maxQuestRows, #zone.quests) end
@@ -2762,7 +2762,7 @@ function CA:CreateUI()
     button:SetBackdropColor(.10, .18, .28, 0)
     button.questID = questID
     button:SetScript("OnClick", function(clicked) self.selectedQuestID = clicked.questID; self:Refresh() end)
-    -- Les contrôles reprennent les textures +/- natives du journal Blizzard.
+    -- The controls use the native +/- textures of the Blizzard journal.
     local toggle = CreateFrame("Button", nil, button)
     toggle:SetSize(22, 22); toggle:SetPoint("LEFT", 3, 0)
     toggle:RegisterForClicks("LeftButtonUp")
@@ -2785,7 +2785,7 @@ function CA:CreateUI()
   self.questSummary = label(right, "", 10, {.66, .72, .8}); self.questSummary:SetPoint("BOTTOM", 0, 12)
   local footer = label(f, self:L("footerQuests"), 10, {.66, .72, .8}); footer:SetPoint("BOTTOM", 0, 12)
   self.footer = footer
-  -- La barre de contexte reste visible dans les Métiers et les futurs onglets.
+  -- The context bar stays visible in Professions and future tabs.
   self.questPanels = { left, center, right }
   self:CreateProfessionUI(f)
   self:CreateFeedbackUI(f)
@@ -2804,8 +2804,8 @@ function CA:Refresh()
     self.factionIcon:SetTexture(FACTION_ICON_TEXTURES[faction] or "Interface/Icons/INV_Misc_QuestionMark")
   end
   local mode = self:GetTrackingMode()
-  -- Le sélecteur est commun aux Quêtes et aux Métiers : le peindre avant le
-  -- retour anticipé de l'onglet Métiers évite l'ancien état visuel figé.
+  -- The selector is shared by Quests and Professions: painting it before the
+  -- early return of the Professions tab avoids the former frozen look.
   self.accountButton:SetBackdropColor(mode == "account" and .12 or .035, mode == "account" and .38 or .055, mode == "account" and .18 or .09, 1)
   self.accountButton:SetBackdropBorderColor(mode == "account" and .25 or .45, mode == "account" and .9 or .45, mode == "account" and .35 or .45, 1)
   self.characterButton:SetBackdropColor(mode == "character" and .12 or .035, mode == "character" and .38 or .055, mode == "character" and .18 or .09, 1)
@@ -2863,9 +2863,9 @@ function CA:Refresh()
   end
 
   local availableQuests = self:GetAccessibleZoneQuests(zone)
-  -- Certaines zones Classic (par exemple le Défilé de Deuillevent) n'ont
-  -- réellement aucune quête extérieure dans les données Forever. Le panneau
-  -- l'indique sans faire croire qu'un addon externe doit être activé.
+  -- Some Classic zones (for example Deadwind Pass) really have
+  -- no outdoor quest in the Forever data. The panel says so
+  -- without suggesting that an external addon must be enabled.
   if #availableQuests == 0 then
     for _, row in ipairs(self.questRows) do
       row.state:Hide(); row.name:Hide(); row.level:Hide(); row.xp:Hide(); row.check:Hide(); row.button:Hide(); row.toggle:Hide(); row.branch:Hide()
@@ -2892,8 +2892,8 @@ function CA:Refresh()
   local tree = self:BuildQuestDisplay(zone)
   local requiredRemaining, visibleRow = total - done, 0
   for j, treeEntry in ipairs(tree) do
-    -- Le plafond est volontairement large (500). Cette garde reste une
-    -- sécurité supplémentaire si une future base contient une zone anormale.
+    -- The cap is deliberately generous (500). This guard is an extra
+    -- safety net should a future database hold an abnormal zone.
     local row = self.questRows[j]
     if not row then break end
     local quest
@@ -3034,8 +3034,8 @@ CA:SetScript("OnEvent", function(_, event, ...)
     ChroniquesAzerothDB = ChroniquesAzerothDB or { completed = {}, accepted = {}, trackingMode = "account" }
     ChroniquesAzerothDB.trackingMode = ChroniquesAzerothDB.trackingMode or "account"
     ChroniquesAzerothCharacterDB = ChroniquesAzerothCharacterDB or { completed = {}, accepted = {} }
-    -- Migration non destructive : l'ancien état compte ne pouvait pas indiquer
-    -- quel personnage avait terminé chaque quête.
+    -- Non-destructive migration: the former account state could not tell
+    -- which character had completed each quest.
     if ChroniquesAzerothDB.schemaVersion ~= 2 then
       ChroniquesAzerothDB.legacyCompleted = ChroniquesAzerothDB.completed or {}
       ChroniquesAzerothDB.characters = ChroniquesAzerothDB.characters or {}
@@ -3043,9 +3043,9 @@ CA:SetScript("OnEvent", function(_, event, ...)
     end
     CA:SyncCurrentCharacter()
     CA:CreateUI(); CA:CreateMinimapButton(); CA:InitializeQuestCatalog(); CA:Refresh()
-    -- Le grimoire est disponible sans ouvrir une fenêtre de métier. Le léger
-    -- délai laisse au client finir de restaurer les sorts du personnage après
-    -- /reload ou connexion.
+    -- The spellbook is available without opening a profession window. The short
+    -- delay lets the client finish restoring the character's spells after
+    -- /reload or login.
     CA:QueueKnownProfessionSpellbookScan()
     print("|cffd6a33a" .. CA:L("addonTitle") .. "|r " .. CA:L("addonLoaded") .. " |cff66ff66/chroniques|r.")
   elseif event == "QUEST_TURNED_IN" then
@@ -3058,14 +3058,14 @@ CA:SetScript("OnEvent", function(_, event, ...)
     CA:RecordQuest(questID, "accepted")
     CA:Refresh()
   elseif event == "TRADE_SKILL_SHOW" or event == "CRAFT_SHOW" or event == "TRADE_SKILL_LIST_UPDATE" or event == "CRAFT_UPDATE" then
-    -- La liste peut arriver juste après ce signal sur Forever. La file réalise
-    -- une seconde lecture brève si nécessaire, uniquement après ouverture
-    -- volontaire du métier natif.
+    -- On Forever, the list may arrive just after this signal. The queue makes
+    -- a second, short reading if needed, only after the native profession
+    -- window was opened by the player.
     CA.professionNativeWindowObserved = true
     CA:QueueProfessionScan()
   elseif event == "SKILL_LINES_CHANGED" then
-    -- Déclenché à l'apprentissage/à la suppression d'un métier ; met à jour
-    -- le relevé autonome même si la fenêtre de métier ne sera jamais ouverte.
+    -- Fired when a profession is learned or unlearned; updates the
+    -- self-contained record even if the profession window is never opened.
     CA:QueueKnownProfessionSpellbookScan()
     CA:Refresh()
   elseif event == "TRADE_SKILL_CLOSE" or event == "CRAFT_CLOSE" then
