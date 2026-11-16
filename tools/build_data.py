@@ -101,6 +101,12 @@ CONTINENT_OTHER = 3
 CONTINENT_CATEGORIES = 4
 TRANSIT_EASTERN_KINGDOMS = {369}
 
+# Quests shown in the zone where they are played rather than under their category, when the
+# category would hold them alone: quest -> area.
+QUEST_ZONE_FIXES = {
+    97979: 141,  # The Goddess Provides, the only quest of the Night Elf sort, played in Teldrassil
+}
+
 # Zones without a map of their own that hold instances, whose loading screens then stand for
 # the zone. No client table links such a zone to its instances, so the link is stated here.
 ZONE_INSTANCES = {
@@ -788,7 +794,7 @@ def build_quests(world: World, questie: dict, valid_ids: set[int]) -> tuple[dict
         if is_junk(q.get("name")):
             skipped["placeholder name"] += 1
             continue
-        zone = to_int(q.get("zoneOrSort"))
+        zone = QUEST_ZONE_FIXES.get(quest_id, to_int(q.get("zoneOrSort")))
         if zone == 0:
             giver = first_of(q.get("startedBy"), 0)
             entity = npcs.get(str(giver)) if giver else None
