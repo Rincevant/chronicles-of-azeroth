@@ -1,30 +1,24 @@
 #!/usr/bin/env bash
-# Checks that the version of the addon is the same in its TOC and in its code, and, when a
-# tag is given, that the tag names this version ("v0.25.1-beta" for version 0.25.1-beta).
+# Prints the version of the addon, read from its TOC, and, when a tag is given, checks that
+# the tag names this version ("v0.25.1-beta" for version 0.25.1-beta). The addon reads its
+# version from the TOC at runtime, so the TOC is the only place that carries it.
 #
 # Usage: tools/check_version.sh [tag]
-# Prints the version on success.
 
 set -euo pipefail
 
 repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
 toc="$repo_dir/ChroniquesAzeroth/ChroniquesAzeroth.toc"
-code="$repo_dir/ChroniquesAzeroth/Core.lua"
 
-toc_version="$(sed -n 's/^## Version:[[:space:]]*\([^[:space:]]*\).*/\1/p' "$toc" | tr -d '\r')"
-code_version="$(sed -n 's/^CA\.VERSION = "\([^"]*\)".*/\1/p' "$code")"
+version="$(sed -n 's/^## Version:[[:space:]]*\([^[:space:]]*\).*/\1/p' "$toc" | tr -d '\r')"
 
-if [ -z "$toc_version" ] || [ -z "$code_version" ]; then
-    echo "Version not found: TOC '$toc_version', code '$code_version'" >&2
+if [ -z "$version" ]; then
+    echo "No version in $toc" >&2
     exit 1
 fi
-if [ "$toc_version" != "$code_version" ]; then
-    echo "The TOC carries version $toc_version but CA.VERSION is $code_version" >&2
-    exit 1
-fi
-if [ $# -ge 1 ] && [ "$1" != "v$toc_version" ]; then
-    echo "The tag $1 does not match version $toc_version (expected v$toc_version)" >&2
+if [ $# -ge 1 ] && [ "$1" != "v$version" ]; then
+    echo "The tag $1 does not match version $version (expected v$version)" >&2
     exit 1
 fi
 
-echo "$toc_version"
+echo "$version"

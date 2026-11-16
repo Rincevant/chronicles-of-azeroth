@@ -10,7 +10,7 @@ messages, issues and pull requests. English is the language most contributors sh
 keeps the project open to players and developers of every language.
 
 Players see the addon in the language of their game client: every text shown in game goes
-through the localization tables of `ChroniquesAzeroth/Core.lua`, with an English and a French
+through the localization tables of `ChroniquesAzeroth/Locales/`, with an English and a French
 entry, and stays out of this rule.
 
 ## Changes

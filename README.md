@@ -4,11 +4,37 @@
 
 ## Features
 
-- Quest progress by zone, continent, faction, character, or account
-- Quest-chain grouping without duplicate entries
-- Profession catalogues with known-recipe tracking
-- French and English client localization
-- An in-game feedback panel that prepares a diagnostic report for a GitHub issue
+- **Quests**: zones grouped by continent, with their completion; quests grouped into chains
+  that unfold; for each quest its status, level, prerequisites, follow-ups, giver and turn-in
+  NPC (with a map waypoint), experience and reputation rewards. A quest is shown locked, with
+  the reason, while the character's level, its prerequisites or the rank of the profession it
+  needs fall short. The zones Chronicles of Azeroth illustrates keep their artwork; the others
+  show their map, or a loading screen.
+- **Professions**: the complete catalogue of each profession for the Forever client, the
+  recipes already learned, the reagents, and how to obtain each recipe (trainer, vendor,
+  drop, quest).
+- **Account or character tracking**: the account view merges the progress of every character
+  that logged in with the addon enabled; a faction selector shows the other faction's quests.
+- **Within reach**: the character view keeps only what the character can do (its race, its
+  class and the professions it has learned), with the counts to match; a switch shows
+  everything.
+- **Ignored quests**: a quest that cannot or need not be done (a Collector's Edition gift, a
+  missed event) can be ignored from its details, which takes it out of the counts. The
+  account view sets the account's choice; a character follows it unless it made its own.
+- **Repeatable quests** (repeatable, daily, weekly) never count in the totals. The server
+  does not remember them, so the addon does: one turned in stays done, and one done before
+  can be marked done from its details.
+- **Links**: a quest links to its prerequisites, follow-ups, exclusive quests and the quest
+  it leads to, to the profession it asks for and to the recipes it rewards; a recipe links
+  to the quests that reward it. A Back link returns to where the link was followed, step by
+  step.
+- **One layout for every tab**: the groups on the left, the selected group and item in the
+  middle, the items of the group on the right, with the same search and the same filter
+  (all, to do, done) on every list.
+- **Feedback**: a tab prepares a diagnostic report to copy into a GitHub issue or the
+  Discord; nothing is sent automatically.
+- French and English, with every text about game content read from the client in its own
+  language.
 
 ## Install
 
@@ -21,13 +47,19 @@
 | --- | --- |
 | `/chroniques` or `/ca` | open or close the window |
 | `/ca help` | list the commands |
-| `/ca diag` | list which game features the client provides and read the professions again |
+| `/ca diag` | list which game features the client provides |
 | `/ca log [count]` | print the last log entries |
 | `/ca debug` | toggle detailed logging |
+| `/ca rescan` | read the character's progress again |
+| `/ca scale <0.5-2>` | scale the whole window |
+| `/ca minimap` | show or hide the minimap button |
+| `/ca reset` | clear the cache of game texts |
 | `/ca clearlog` | clear the log |
 
 The minimap button opens the window with a left click and switches between **Account** and
-**Character** tracking with a right click; drag it around the minimap to move it.
+**Character** tracking with a right click; drag it around the minimap to move it. Drag the
+header of the window to move it and the grip in its bottom right corner to resize it; both
+are kept between sessions.
 
 The addon keeps a log in its saved variables, written by the game on `/reload` and on logout:
 `WTF/Account/<account>/SavedVariables/ChroniquesAzeroth.lua`, table `ChroniquesAzerothDB.log`.
@@ -35,46 +67,26 @@ At every login it records which client APIs exist, and any error of the addon is
 instead of interrupting the game, which helps when a feature behaves differently on the
 Forever client.
 
-## How progress is counted
-
-- The catalogue embeds 2,307 quests across the 46 Classic outdoor zones and capitals. Quest
-  titles are shipped in French and English; everything else about a quest the client can
-  tell (its state in the log, its exact rewards) is read from the client.
-- A quest is **required** by default: it counts in the zone's percentage. It becomes
-  **optional** only when an accessible path really lets the player skip it without
-  blocking the zone. The introduction of Eagan Peltskinner (ID 5261) is the first such
-  case: the NPC directly offers the next quest. Optional quests stay listed but never
-  count against the 100 %.
-- Repeatable quests, mount exchanges, contextual "Welcome!" entries and technical markers
-  are left out of the totals.
-- Faction-specific quests of neutral zones are shown only to characters of that faction.
-- **Account** mode merges the completions of every character that logged in with the
-  addon; **Character** mode shows only those recorded for the logged-in character. A
-  character's earlier completions are imported the first time it logs in with the addon:
-  the addon cannot read the files of other characters during play.
-- Professions follow the same Account / Character selector. Recipes are read from the
-  spellbook at login and from the native profession window when the player opens it;
-  nothing is requested from the server. Reagents and sources are read only for the
-  selected recipe, and a source the client does not provide is shown as unknown rather
-  than made up.
-
-The quest catalogue was checked against QuestieDB Forever,
-[ForeverDB](https://foreverdb.net/quests/elwynn-forest),
-[Wowhead Forever](https://www.wowhead.com/forever/fr/quest=7) and
-[ForeverChanges](https://foreverchanges.pro/fr/quest/7).
+The saved variables of the versions before 0.26 are converted at the first login: each
+character keeps the quests and recipes it had recorded, and the tracking mode and the place
+of the minimap button carry over.
 
 ## Repository layout
 
-- `ChroniquesAzeroth/` — addon source files: `Core.lua` (addon frame and localized texts), `Zones.lua`, `Quests.lua` and `Professions.lua` (data and tracking), `UI/` (the window, one file per tab and the shared widgets), `Events.lua` (slash commands and game events), and the generated catalogues.
-- `tools/` — development scripts used to generate catalogues and to check the version. These are not needed at runtime.
+- `ChroniquesAzeroth/` — addon source files: `Core/` (lifecycle, log, client API wrappers,
+  saved variables, player, names), `Locales/`, `Data/` (generated), `Modules/` (the progress
+  of each domain), `UI/` (the window, the shared widgets and one view per tab) and `Assets/`
+  (the artwork of the zones and the medallion).
+- `tools/` — the data generator, the artwork importer and the version check. They are not
+  needed at runtime.
 - `tests/` — offline tests, run on top of an emulation of the WoW API.
 - `.github/workflows/` — continuous integration and release publication.
 
 ## Development
 
 The tests load the addon in TOC order on top of an emulation of the WoW client API
-(`tests/wow_stub.lua`), log in with a fresh install and with saved variables of an older
-version, open the window and go through every tab. They need a Lua 5.1 interpreter (or
+(`tests/wow_stub.lua`), log in, open the window and go through every tab and list. The run
+fails on any error the addon logs, on any missing translation and on any failed check. They need a Lua 5.1 interpreter (or
 LuaJIT):
 
 ```sh
@@ -83,7 +95,7 @@ CA_TEST_LOCALE=frFR lua5.1 tests/run.lua
 ```
 
 Every push and pull request runs them on GitHub Actions, together with a compilation of
-every Lua file and a check that the TOC and `CA.VERSION` carry the same version.
+every Lua file and a read of the version of the TOC.
 
 The files of `ChroniquesAzeroth/Data/` are generated by `tools/build_data.py` from these
 sources, which are only read at build time: in game, the addon reads no other addon and
@@ -115,8 +127,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the conventions of the repository.
 
 A release is published by pushing a tag named after the version of the TOC:
 
-1. Set the new version in `ChroniquesAzeroth/ChroniquesAzeroth.toc` (`## Version:`) and in
-   `CA.VERSION` at the top of `ChroniquesAzeroth/Core.lua`.
+1. Set the new version in `ChroniquesAzeroth/ChroniquesAzeroth.toc` (`## Version:`); the
+   addon reads it from there.
 2. Add its section to [CHANGELOG.md](CHANGELOG.md), headed `## <version>`.
 3. Commit, then tag and push: `git tag v0.26.0-beta && git push origin v0.26.0-beta`.
 

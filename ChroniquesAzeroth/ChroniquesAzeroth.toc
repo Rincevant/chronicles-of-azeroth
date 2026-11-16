@@ -8,22 +8,43 @@
 ## X-License: GPL-3.0-or-later
 ## SavedVariables: ChroniquesAzerothDB
 ## SavedVariablesPerCharacter: ChroniquesAzerothCharacterDB
+## IconTexture: Interface\AddOns\ChroniquesAzeroth\Assets\heritage-medallion
 
-ProfessionCatalog.lua
-QuestCatalog.lua
+Core\Init.lua
+Core\Log.lua
+Core\Compat.lua
+Core\Constants.lua
+Locales\Locale.lua
+Locales\enUS.lua
+Locales\frFR.lua
 
-Core.lua
-Log.lua
-Diagnostics.lua
-Zones.lua
-Quests.lua
-Professions.lua
+Data\Constants.lua
+Data\Quests.lua
+Data\Zones.lua
+Data\Entities.lua
+Data\Professions.lua
+Data\Instances.lua
+Data\Collections.lua
+Data\Artwork.lua
+Data\Strings.enUS.lua
+Data\Strings.frFR.lua
 
+Core\Database.lua
+Core\Player.lua
+Core\Names.lua
+Core\Diagnostics.lua
+
+Modules\Quests.lua
+Modules\Professions.lua
+
+UI\Theme.lua
 UI\Widgets.lua
+UI\QuestWidgets.lua
 UI\MainFrame.lua
-UI\QuestsView.lua
-UI\ProfessionsView.lua
-UI\FeedbackView.lua
+UI\Views\Layout.lua
+UI\Views\QuestsView.lua
+UI\Views\ProfessionsView.lua
+UI\Views\FeedbackView.lua
 UI\MinimapButton.lua
 
-Events.lua
+Core\Slash.lua

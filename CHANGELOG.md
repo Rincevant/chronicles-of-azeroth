@@ -5,6 +5,24 @@ the notes of its GitHub release.
 
 ## Unreleased
 
+- Quests and professions come from data generated from the client tables of the Forever
+  build, QuestieDB and Wowhead: 5,724 quests across the zones of both continents and the quest
+  categories, and the complete recipe catalogue of every profession, with reagents and
+  sources (trainer, vendor, drop, quest).
+- Quest details tell the giver and the turn-in NPC, with a map waypoint, the experience and
+  the reputation; a quest out of reach is shown locked, with the reason (level, prerequisite,
+  profession rank).
+- Quests can be ignored, which takes them out of the counts; repeatable quests are remembered
+  once turned in and never count.
+- Every list has the same search and the same filter (all, to do, done); quests and recipes
+  link to each other, and a Back link returns to where a link was followed.
+- A faction selector shows the quests of the other faction, and the character view keeps only
+  what the character can do, unless the switch shows everything.
+- The window can be moved, resized and scaled (`/ca scale`); the minimap button can be hidden
+  (`/ca minimap`). The zones Chronicles of Azeroth illustrates keep their artwork; the others
+  show their map or a loading screen.
+- The saved variables of the previous versions are converted at the first login: each
+  character keeps the quests and recipes it had recorded.
 - A log is kept in the saved variables: the APIs the client provides, the quests turned in
   and any error of the addon, which no longer interrupts the game. `/ca help`, `/ca log`,
   `/ca debug` and `/ca clearlog` complete `/ca diag`.

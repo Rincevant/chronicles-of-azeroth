@@ -24,7 +24,7 @@ jobs:
       - name: Compile every Lua file
         run: find ChroniquesAzeroth tests -name '*.lua' -print0 | xargs -0 -n 1 luac5.1 -p
 
-      - name: Check that the TOC and the code carry the same version
+      - name: Read the version of the TOC
         run: bash tools/check_version.sh
 
       - name: Run the tests with an English client
