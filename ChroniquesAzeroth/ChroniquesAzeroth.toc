@@ -36,6 +36,7 @@ Core\Diagnostics.lua
 
 Modules\Quests.lua
 Modules\Professions.lua
+Modules\Instances.lua
 
 UI\Theme.lua
 UI\Widgets.lua
@@ -44,6 +45,7 @@ UI\MainFrame.lua
 UI\Views\Layout.lua
 UI\Views\QuestsView.lua
 UI\Views\ProfessionsView.lua
+UI\Views\InstancesView.lua
 UI\Views\FeedbackView.lua
 UI\MinimapButton.lua
 

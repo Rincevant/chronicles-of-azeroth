@@ -13,6 +13,8 @@
 - **Professions**: the complete catalogue of each profession for the Forever client, the
   recipes already learned, the reagents, and how to obtain each recipe (trainer, vendor,
   drop, quest).
+- **Dungeons and raids**: the bosses defeated and the quests of each instance; an instance
+  quest opens in its tab, on its instance.
 - **Account or character tracking**: the account view merges the progress of every character
   that logged in with the addon enabled; a faction selector shows the other faction's quests.
 - **Within reach**: the character view keeps only what the character can do (its race, its

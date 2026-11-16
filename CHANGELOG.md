@@ -5,6 +5,8 @@ the notes of its GitHub release.
 
 ## Unreleased
 
+- **Dungeons** and **Raids** tabs: the bosses of each instance, defeated or not, and its quests,
+  which a link from a recipe or a quest opens on their instance.
 - Quests and professions come from data generated from the client tables of the Forever
   build, QuestieDB and Wowhead: 5,724 quests across the zones of both continents and the quest
   categories, and the complete recipe catalogue of every profession, with reagents and
