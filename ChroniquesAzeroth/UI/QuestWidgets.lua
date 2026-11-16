@@ -57,6 +57,24 @@ local function sharedPrefix(chains)
     return nil
 end
 
+-- A chain of crafting orders, which every quest of it links to a profession: the generator
+-- gathers them in the category of their profession. Such a chain is a group, not a
+-- sequence; it is shown under the prefix its titles share, such as "Craftsman's Writ", and
+-- its rows show what tells the orders apart. Returns the prefix, or nil for another chain.
+local function ordersPrefix(chain)
+    for _, questID in ipairs(chain) do
+        if not ns.Data.Quests[questID][Q.CRAFT] then return nil end
+    end
+    local name = ns.Names.Quest(chain[1])
+    return name and name:match("^(.-%s?:%s+)%S")
+end
+
+-- Label of a group of orders: its prefix without the colon and the spaces around it,
+-- including the no-break space of French typography.
+local function ordersLabel(prefix)
+    return (prefix:gsub(":%s*$", ""):gsub("\194\160$", ""):gsub("%s+$", ""))
+end
+
 -- Turns chains into list items for a view. `expanded[rootID]` opens a chain. A state
 -- `filter` (UI.StateFilter) narrows the quests listed; the counts keep them all. The
 -- `forced` quest, which a link leads to, is listed whatever the view and the filters hide,
@@ -100,15 +118,17 @@ function QuestWidgets.BuildItems(chains, view, expanded, query, filter, forced)
             end
             if #visible > 1 then expanded[visible[1]] = true end
         end
-        if #visible == 1 then
+        local orders = ordersPrefix(chain)
+        if #visible == 1 and not orders then
             items[#items + 1] = { kind = "quest", id = visible[1], prefix = prefix }
-        elseif #visible > 1 then
+        elseif #visible > 0 then
             local root = visible[1]
             local open = expanded[root] or (query and query ~= "")
-            items[#items + 1] = { kind = "chain", id = root, summary = summary, open = open, prefix = prefix }
+            items[#items + 1] = { kind = "chain", id = root, summary = summary, open = open, prefix = prefix,
+                label = orders and ordersLabel(orders) }
             if open then
                 for _, questID in ipairs(visible) do
-                    items[#items + 1] = { kind = "quest", id = questID, indent = true, prefix = prefix }
+                    items[#items + 1] = { kind = "quest", id = questID, indent = true, prefix = orders or prefix }
                 end
             end
         end
@@ -130,6 +150,7 @@ local function capitalize(text)
 end
 
 local function rowName(item)
+    if item.label then return item.label end
     local name = questName(item.id)
     if item.prefix and name:sub(1, #item.prefix) == item.prefix then return capitalize(name:sub(#item.prefix + 1)) end
     return name

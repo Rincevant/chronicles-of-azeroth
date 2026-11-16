@@ -18,6 +18,8 @@ the notes of its GitHub release.
 - A quest that cannot or need not be done can be ignored, which takes it out of the counts.
   Repeatable quests (repeatable, daily, weekly) never count: one turned in is remembered, and
   one done before can be marked done.
+- The craftsman's writs of the Forever client are listed in the category of their profession,
+  in a group of their own that shows the item each writ asks for.
 
 ### Professions
 

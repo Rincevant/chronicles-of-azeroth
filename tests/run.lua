@@ -139,15 +139,20 @@ local function findGroup(continentValue, id)
         if group.id == id then return group end
     end
 end
-local crafting = findGroup("categories", 16941)
-check(crafting and not findGroup("ek", 16941), "an area that only names quests is listed among the categories")
+local alchemyOrders = findGroup("categories", 181)
+check(not findGroup("categories", 16941) and alchemyOrders, "the crafting orders leave the area that only names them")
+local ordersChain
+for _, chain in ipairs(alchemyOrders.chains) do
+    if ns.Data.Quests[chain[1]][ns.Const.Quest.CRAFT] == 171 then ordersChain = chain end
+end
+check(ordersChain and #ordersChain > 1, "the crafting orders of a profession form one chain in its category")
 local artOf = function(group)
     questsView:SelectGroup(group)
     return questsView.banner.art.request
 end
 local warrior = artOf(findGroup("categories", 81))
 check(warrior and warrior.kind == "file" and warrior.ratio == 1, "a class category shows its talent background")
-local framed = artOf(crafting)
+local framed = artOf(findGroup("categories", 22))
 check(framed.kind == "file", "a category shows a loading screen")
 check(framed.top and framed.top > 0 and framed.bottom < 1,
     "a framed loading screen is cropped to its painting, without the logo band")
@@ -428,18 +433,20 @@ end
 frame.filter:Click()
 ns.MainFrame:SelectTab("quests")
 
--- Crafting orders: the rows drop the prefix that every title shares.
+-- Crafting orders: a group named after the prefix of their titles, whose rows drop it.
 local questName = ns.Names.Quest
-ns.Names.Quest = function(questID) return "Writ: Item " .. questID end
-local orders = ns.QuestWidgets.BuildItems(crafting.chains, everythingView, {})
-ns.Names.Quest = questName
-check(orders[1] and orders[1].prefix == "Writ: ", "the shared prefix of the titles is found")
-ns.Names.Quest = function(questID) return "Commission : élixir " .. questID end
-orders = ns.QuestWidgets.BuildItems(crafting.chains, everythingView, {})
+ns.Names.Quest = function(questID) return "Commission d'artisan\194\160: élixir " .. questID end
+local orders = ns.QuestWidgets.BuildItems({ ordersChain }, everythingView, { [ordersChain[1]] = true })
 local orderRow = questsView.quests.rows[1]
 ns.QuestWidgets.FillRow(orderRow, orders[1], everythingView)
+check(orders[1].kind == "chain" and orderRow.name:GetText() == "Commission d'artisan",
+    "the crafting orders are grouped under the prefix of their titles (%s)", orderRow.name:GetText())
+ns.QuestWidgets.FillRow(orderRow, orders[2], everythingView)
+check(orderRow.name:GetText():sub(1, 7) == "Élixir", "an order shows the item it asks for, capitalized (%s)", orderRow.name:GetText())
+ns.Names.Quest = function(questID) return "Writ: Item " .. questID end
+orders = ns.QuestWidgets.BuildItems({ { ordersChain[1] } }, everythingView, {})
 ns.Names.Quest = questName
-check(orderRow.name:GetText():sub(1, 7) == "Élixir", "a name left by the prefix starts with a capital (%s)", orderRow.name:GetText())
+check(orders[1].kind == "chain" and orders[1].label == "Writ", "a single order is still shown in its group")
 
 -- A quest needing a higher profession rank is locked; the character (stub) has 75 in Blacksmithing.
 local hardSmithing = questNeeding(function(row)

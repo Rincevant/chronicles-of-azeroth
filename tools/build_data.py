@@ -943,6 +943,40 @@ def link_profession_categories(cache: Path, sorts: dict, professions: dict) -> N
     log(f"profession categories: {', '.join(sorted(linked))}")
 
 
+def fold_crafting_orders(quests: dict, zones: dict, sorts: dict) -> None:
+    """Moves the crafting orders linked to a profession into the quest category of that
+    profession, where they form one chain of their own, ordered by level; an area that only
+    named them is then left out. The addon shows such a chain as a group of orders."""
+    by_skill = {row["skill"]: sort_id for sort_id, row in sorts.items() if row.get("skill")}
+    moved: dict[int, list[int]] = defaultdict(list)
+    for area_id, zone in list(zones.items()):
+        if zone["continent"] != CONTINENT_CATEGORIES:
+            continue
+        kept = []
+        for chain in zone["chains"]:
+            rest = []
+            for quest_id in chain:
+                row = quests[quest_id]
+                sort_id = by_skill.get(row[QUEST_CRAFT_INDEX]) if len(row) > QUEST_CRAFT_INDEX else None
+                if sort_id is None:
+                    rest.append(quest_id)
+                    continue
+                row[0] = -sort_id
+                moved[sort_id].append(quest_id)
+            if rest:
+                kept.append(rest)
+        if kept:
+            zone["chains"] = kept
+        else:
+            del zones[area_id]
+    for sort_id, quest_ids in moved.items():
+        row = sorts[sort_id]
+        row["chains"].append(sorted(quest_ids, key=lambda q: (quests[q][2], q)))
+        levels = [quests[q][2] for chain in row["chains"] for q in chain if quests[q][2] > 0]
+        row["levels"] = [min(levels), max(levels)] if levels else None
+    log(f"crafting orders moved to their profession category: {sum(len(q) for q in moved.values())}")
+
+
 def category_screen(world: World, key: int) -> dict:
     """Loading screen chosen for a quest category, if the client ships it."""
     map_id = CATEGORY_SCREENS.get(key)
@@ -1512,6 +1546,7 @@ def main() -> int:
     professions = build_professions(cache, questie, referenced, served, args.wowhead_browser)
     link_crafting_orders(quests, zones, questie, professions)
     link_profession_categories(cache, sorts, professions)
+    fold_crafting_orders(quests, zones, sorts)
     instances, encounters = build_instances(cache, world, extra["instances"], quests)
     collections = build_collections(cache, served)
     overlays = build_map_overlays(cache, {z["uiMap"] for z in zones.values() if z.get("uiMap")}, shipped)
