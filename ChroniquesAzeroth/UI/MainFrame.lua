@@ -83,7 +83,9 @@ local function buildHeader(frame)
         local progress = MainFrame.progress
         if progress then
             for _, tab in ipairs(TABS) do
-                GameTooltip:AddDoubleLine(ns:GameLabel(tab.global, tab.label), progressLine(progress[tab.id]), 1, 1, 1, 1, 1, 1)
+                if progress[tab.id] then
+                    GameTooltip:AddDoubleLine(ns:GameLabel(tab.global, tab.label), progressLine(progress[tab.id]), 1, 1, 1, 1, 1, 1)
+                end
             end
         end
         GameTooltip:AddLine(L.OVERALL_PROGRESS_NOTE, 0.6, 0.6, 0.6, true)
@@ -135,13 +137,16 @@ local function buildTabs(frame)
             MainFrame:ForgetHistory()
             MainFrame:SelectTab(tab.id)
         end)
-        -- Progress of the tab, a thin bar along its bottom edge, its figures in the tooltip.
-        button.progress = UI.ProgressBar(button, 3)
-        button.progress:SetPoint("BOTTOMLEFT", 1, 1)
-        button.progress:SetPoint("BOTTOMRIGHT", -1, 1)
+        -- Progress of the tab, a thin bar along its bottom edge, its figures in the tooltip; a
+        -- tab that counts nothing, such as Feedback, has none.
+        if not tab.untracked then
+            button.progress = UI.ProgressBar(button, 3)
+            button.progress:SetPoint("BOTTOMLEFT", 3, 3)
+            button.progress:SetPoint("BOTTOMRIGHT", -3, 3)
+        end
         button:SetScript("OnEnter", function(self)
             local progress = MainFrame.progress
-            if not progress then return end
+            if not progress or not progress[tab.id] then return end
             GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
             GameTooltip:SetText(self.label:GetText() or "", 1, 0.82, 0)
             GameTooltip:AddLine(progressLine(progress[tab.id]), 1, 1, 1)
@@ -413,8 +418,8 @@ function MainFrame:RefreshProgress()
     local progress = ns.Progress:Compute(self:View())
     self.progress = progress
     for _, tab in ipairs(TABS) do
-        local counts = progress[tab.id]
-        frame.tabs[tab.id].progress:SetProgress(counts.done, counts.total)
+        local counts, bar = progress[tab.id], frame.tabs[tab.id].progress
+        if counts and bar then bar:SetProgress(counts.done, counts.total) end
     end
     local overall = progress.overall
     if overall then

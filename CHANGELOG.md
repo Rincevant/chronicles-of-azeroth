@@ -5,6 +5,8 @@ the notes of its GitHub release.
 
 ## Unreleased
 
+- Progress gauges: a bar under each tab, and a ring for the overall progress, the mean of the
+  tabs.
 - **Collections** tab: mounts, pets, toys, appearance sets and titles, owned or missing, with
   the source of each item.
 - **Legacy challenges** tab, read from the game, with their criteria and rewards; within reach,

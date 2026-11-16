@@ -34,6 +34,9 @@
   it leads to, to the profession it asks for and to the recipes it rewards; a recipe links
   to the quests that reward it. A Back link returns to where the link was followed, step by
   step.
+- **Progress gauges**: a thin bar under each tab shows its progress, with its figures in the
+  tooltip, and the ring at the top right the overall progress, the mean of the tabs, so that
+  each tab weighs the same whatever its number of entries.
 - **One layout for every tab**: the groups on the left, the selected group and item in the
   middle, the items of the group on the right, with the same search and the same filter
   (all, to do, done) on every list.

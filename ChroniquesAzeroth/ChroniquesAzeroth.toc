@@ -39,6 +39,7 @@ Modules\Professions.lua
 Modules\Instances.lua
 Modules\Achievements.lua
 Modules\Collections.lua
+Modules\Progress.lua
 
 UI\Theme.lua
 UI\Widgets.lua
