@@ -88,7 +88,7 @@ At every login it records which client APIs exist, and any error of the addon is
 instead of interrupting the game, which helps when a feature behaves differently on the
 Forever client.
 
-The saved variables of the versions before 0.26 are converted at the first login: each
+The saved variables of the versions before 1.0 are converted at the first login: each
 character keeps the quests and recipes it had recorded, and the tracking mode and the place
 of the minimap button carry over.
 
@@ -148,17 +148,20 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the conventions of the repository.
 
 ## Releases
 
-A release is published by pushing a tag named after the version of the TOC:
+A release is published by itself when a new version reaches `main`:
 
 1. Set the new version in `ChroniquesAzeroth/ChroniquesAzeroth.toc` (`## Version:`); the
    addon reads it from there.
 2. Add its section to [CHANGELOG.md](CHANGELOG.md), headed `## <version>`.
-3. Commit, then tag and push: `git tag v0.26.0-beta && git push origin v0.26.0-beta`.
+3. Merge or push the change to `main`.
 
-The workflow checks that the tag matches the version, runs the tests, packages the
-`ChroniquesAzeroth` folder with the license into `ChroniquesAzeroth-v<version>.zip`, and
-publishes it as a GitHub release whose notes are the version's section of the changelog.
-A version with a suffix, such as `-beta`, is published as a pre-release.
+On every push to `main`, the release workflow reads the version of the TOC. When no tag
+`v<version>` exists yet, it runs the tests, packages the `ChroniquesAzeroth` folder with the
+license into `ChroniquesAzeroth-v<version>.zip`, creates the tag and publishes the zip as a
+GitHub release whose notes are the version's section of the changelog; it stops if that
+section is missing. A push that keeps the version publishes nothing, and a version with a
+suffix, such as `-beta`, is published as a pre-release. The workflow can also be started by
+hand from the Actions tab.
 
 ## Feedback
 

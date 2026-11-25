@@ -1,6 +1,6 @@
 # Checks every push and pull request: the addon's Lua files must compile with Lua 5.1 (the
-# language version of the WoW client), the version must be the same in the TOC and in the
-# code, and the offline tests must pass with an English and a French client.
+# language version of the WoW client), the version must be readable from the TOC, and the
+# offline tests must pass with an English and a French client.
 name: CI
 
 on:
