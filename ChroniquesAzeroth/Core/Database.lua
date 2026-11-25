@@ -34,7 +34,7 @@ local function copyDefaults(target, defaults)
     end
 end
 
--- Learned recipes of a profession storage of the versions before 0.26:
+-- Learned recipes of a profession storage of the versions before 1.0:
 -- [professionID] = { recipes = { ["spellID"] = { learned = true } } }.
 local function legacyRecipes(storage, into)
     for _, profession in pairs(storage or {}) do
@@ -47,7 +47,7 @@ local function legacyRecipes(storage, into)
     return into
 end
 
--- Saved variables of the versions before 0.26 (schemaVersion 2) keep, for each character, the
+-- Saved variables of the versions before 1.0 (schemaVersion 2) keep, for each character, the
 -- quests it completed and the recipes it learned; they become its record. The tracking mode
 -- and the position of the minimap button carry over. Completions recorded before the
 -- characters were told apart cannot be given to one of them: each character reads its own
@@ -73,7 +73,7 @@ local function migrateLegacy(db)
         "legacyCompleted", "professionCharacters", "badges" }) do
         db[field] = nil
     end
-    ns.Log:Info("Saved variables of a version before 0.26 migrated: %d characters", migrated)
+    ns.Log:Info("Saved variables of a version before 1.0 migrated: %d characters", migrated)
 end
 
 function Database:Initialize()
@@ -149,7 +149,7 @@ function Database:TouchCharacter()
     -- [questID] = true: repeatable quests turned in or marked done, which the server's list
     -- of completed quests does not keep.
     record.repeatables = record.repeatables or {}
-    -- The recipes a version before 0.26 kept in the saved variables of the character join its
+    -- The recipes a version before 1.0 kept in the saved variables of the character join its
     -- record, once.
     if type(ChroniquesAzerothCharacterDB) == "table" then
         legacyRecipes(ChroniquesAzerothCharacterDB.professions, record.recipes)

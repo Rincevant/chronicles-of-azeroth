@@ -820,7 +820,7 @@ check(not frame:IsShown(), "/ca toggles the window closed")
 
 -------------------------------------------------------------------------------
 -- Chronicles of Azeroth: the Feedback tab, the minimap button, the saved variables of the
--- versions before 0.26
+-- versions before 1.0
 -------------------------------------------------------------------------------
 
 -- Text sizes follow the size the client gives its standard text.
@@ -876,7 +876,7 @@ _G[compartment.AddonCompartmentFunc]()
 check(frame:IsShown() ~= wasShown, "the addon compartment toggles the window")
 _G[compartment.AddonCompartmentFunc]()
 
--- The saved variables of a version before 0.26 become the records of their characters.
+-- The saved variables of a version before 1.0 become the records of their characters.
 do
     local current, currentCharacter = ChroniquesAzerothDB, ChroniquesAzerothCharacterDB
     ChroniquesAzerothDB = {

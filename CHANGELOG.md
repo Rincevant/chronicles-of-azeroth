@@ -3,7 +3,7 @@
 The versions of Chronicles of Azeroth, newest first. The section of a version is used as
 the notes of its GitHub release.
 
-## 0.26.0-beta — Completionist
+## 1.0 — Completionist
 
 ### Quests
 
@@ -74,7 +74,7 @@ the notes of its GitHub release.
   (`Data/`), progress logic (`Modules/`) and interface (`UI/`, one view per tab).
 - Offline tests run the addon on an emulation of the WoW API, with an English and a French
   client; GitHub Actions runs them on every push and pull request, and publishes a release
-  when a version tag is pushed.
+  by itself when a new version of the TOC reaches main.
 
 ## 0.25.1-beta — 2026-10-06
 
