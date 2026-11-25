@@ -4,10 +4,57 @@
 ## Notes: Standalone collection tracking for quests and professions.
 ## Notes-frFR: Suivi autonome de collection des quêtes et métiers.
 ## Author: Peron
-## Version: 0.25.1-beta
+## Version: 0.26.0-beta
+## X-License: GPL-3.0-or-later
 ## SavedVariables: ChroniquesAzerothDB
 ## SavedVariablesPerCharacter: ChroniquesAzerothCharacterDB
+## AddonCompartmentFunc: ChroniquesAzeroth_OnAddonCompartmentClick
+## AddonCompartmentFuncOnEnter: ChroniquesAzeroth_OnAddonCompartmentEnter
+## AddonCompartmentFuncOnLeave: ChroniquesAzeroth_OnAddonCompartmentLeave
+## IconTexture: Interface\AddOns\ChroniquesAzeroth\Assets\heritage-medallion
 
-ProfessionCatalog.lua
-QuestCatalog.lua
-ChroniquesAzeroth.lua
+Core\Init.lua
+Core\Log.lua
+Core\Compat.lua
+Core\Constants.lua
+Locales\Locale.lua
+Locales\enUS.lua
+Locales\frFR.lua
+
+Data\Constants.lua
+Data\Quests.lua
+Data\Zones.lua
+Data\Entities.lua
+Data\Professions.lua
+Data\Instances.lua
+Data\Collections.lua
+Data\Artwork.lua
+Data\Strings.enUS.lua
+Data\Strings.frFR.lua
+
+Core\Database.lua
+Core\Player.lua
+Core\Names.lua
+Core\Diagnostics.lua
+
+Modules\Quests.lua
+Modules\Professions.lua
+Modules\Instances.lua
+Modules\Achievements.lua
+Modules\Collections.lua
+Modules\Progress.lua
+
+UI\Theme.lua
+UI\Widgets.lua
+UI\QuestWidgets.lua
+UI\MainFrame.lua
+UI\Views\Layout.lua
+UI\Views\QuestsView.lua
+UI\Views\ProfessionsView.lua
+UI\Views\InstancesView.lua
+UI\Views\AchievementsView.lua
+UI\Views\CollectionsView.lua
+UI\Views\FeedbackView.lua
+UI\MinimapButton.lua
+
+Core\Slash.lua
